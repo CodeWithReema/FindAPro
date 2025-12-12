@@ -1,6 +1,6 @@
 # FindAPro - Local Services Marketplace
 
-A modern Angie's List-style platform built with Django 5, Django REST Framework, TailwindCSS, PostgreSQL, and Docker. Connect with local professionals for plumbing, electrical, cleaning, mechanics, and more.
+A modern Angie's List-style platform built with Django 5, Django REST Framework, TailwindCSS, Node.js, PostgreSQL, and Docker. Connect with local professionals for plumbing, electrical, cleaning, mechanics, and more.
 
 <div align="center">
   <img src="docs/images/homepage.png" alt="FindAPro Homepage" width="900"/>
