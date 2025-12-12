@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Favorites{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-display font-bold text-gray-900">My Favorites</h1>
+                    <p class="text-gray-600 mt-1">{{ favorites.count }} saved provider{{ favorites.count|pluralize }}</p>
+                </div>
+                <a href="{% url 'providers:search' %}" class="btn-secondary">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Find More Pros
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% if favorites %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for favorite in favorites %}
+            {% with provider=favorite.provider %}
+            <article class="card group" id="favorite-{{ provider.id }}">
+                <a href="{{ provider.get_absolute_url }}" class="block">
+                    <div class="aspect-[4/3] relative overflow-hidden">
+                        {% if provider.image %}
+                        <img src="{{ provider.image.url }}" alt="{{ provider.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+                            <span class="text-6xl font-display font-bold text-white/30">{{ provider.name|slice:":1" }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if provider.is_verified %}
+                        <span class="absolute top-4 left-4 badge-verified">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Verified
+                        </span>
+                        {% endif %}
+                        
+                        <!-- Remove from favorites button -->
+                        <button onclick="event.preventDefault(); toggleFavorite({{ provider.id }})" 
+                                class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform favorite-btn"
+                                data-provider-id="{{ provider.id }}">
+                            <svg class="w-6 h-6 text-red-500 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+                        
+                        <span class="absolute bottom-4 right-4 badge-category">{{ provider.category.name }}</span>
+                    </div>
+                </a>
+                
+                <div class="p-6">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h3 class="font-display font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors">
+                                <a href="{{ provider.get_absolute_url }}">{{ provider.name }}</a>
+                            </h3>
+                            <p class="text-gray-500 text-sm flex items-center gap-1 mt-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                </svg>
+                                {{ provider.city }}, {{ provider.state }}
+                            </p>
+                        </div>
+                        <span class="text-lg font-semibold text-brand-600">{{ provider.pricing_range }}</span>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mt-3 line-clamp-2">{{ provider.tagline|default:provider.description|truncatewords:15 }}</p>
+                    
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="flex">
+                                {% for star in provider.get_rating_stars %}
+                                {% if star == 'full' %}
+                                <svg class="rating-star" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                                {% else %}
+                                <svg class="rating-star-empty" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm text-gray-600">{{ provider.average_rating }} ({{ provider.review_count }})</span>
+                        </div>
+                        <span class="text-xs text-gray-400">Saved {{ favorite.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+            </article>
+            {% endwith %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-xl font-display font-semibold text-gray-900">No favorites yet</h2>
+            <p class="text-gray-500 mt-2 max-w-md mx-auto">
+                Start exploring and save the providers you love by clicking the heart icon on their profile.
+            </p>
+            <a href="{% url 'providers:search' %}" class="btn-primary mt-6">
+                Discover Professionals
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleFavorite(providerId) {
+    fetch(`/providers/favorite/${providerId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && !data.is_favorited) {
+            // Remove the card with animation
+            const card = document.getElementById(`favorite-${providerId}`);
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                card.remove();
+                // Check if no favorites left
+                const remaining = document.querySelectorAll('[id^="favorite-"]');
+                if (remaining.length === 0) {
+                    location.reload();
+                }
+            }, 300);
+        }
+    });
+}
+</script>
+{% endblock %}
+

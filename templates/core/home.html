@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Find Local Service Professionals{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-hero-pattern opacity-50"></div>
+    
+    <!-- Floating Shapes -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-brand-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-soft"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-soft" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Content -->
+            <div class="animate-fade-in">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-100 text-brand-700 text-sm font-medium mb-6">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    Trusted by thousands of homeowners
+                </span>
+                
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-gray-900 leading-tight text-balance">
+                    Find the <span class="gradient-text">Perfect Pro</span> for Any Job
+                </h1>
+                
+                <p class="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
+                    Connect with verified local professionals. Plumbers, electricians, cleaners, mechanics—whatever you need, we've got you covered.
+                </p>
+                
+                <!-- Search Bar -->
+                <form action="{% url 'providers:search' %}" method="GET" class="mt-8 bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-3 flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1 relative">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" name="q" placeholder="What service do you need?" class="w-full pl-12 pr-4 py-4 rounded-xl border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 transition-all">
+                    </div>
+                    <div class="flex-1 relative">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <input type="text" name="city" placeholder="City or ZIP code" class="w-full pl-12 pr-4 py-4 rounded-xl border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 transition-all">
+                    </div>
+                    <button type="submit" class="btn-primary px-8 py-4 whitespace-nowrap">
+                        Search Pros
+                    </button>
+                </form>
+                
+                <!-- Smart Match & Emergency CTAs -->
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
+                    <a href="{% url 'providers:smart_match' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white font-semibold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all hover:-translate-y-0.5">
+                        <span class="text-xl">🎯</span>
+                        Take the Match Quiz
+                    </a>
+                    <span class="text-gray-400">or</span>
+                    <a href="{% url 'providers:emergency' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 animate-pulse">
+                        <span class="text-xl">🚨</span>
+                        Emergency? Get Help Now
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="mt-12 grid grid-cols-3 gap-6">
+                    <div class="text-center animate-slide-up animate-delay-100">
+                        <div class="text-3xl font-display font-bold text-gray-900">{{ stats.providers|default:"500" }}+</div>
+                        <div class="text-sm text-gray-500 mt-1">Verified Pros</div>
+                    </div>
+                    <div class="text-center animate-slide-up animate-delay-200">
+                        <div class="text-3xl font-display font-bold text-gray-900">{{ stats.categories|default:"25" }}+</div>
+                        <div class="text-sm text-gray-500 mt-1">Service Types</div>
+                    </div>
+                    <div class="text-center animate-slide-up animate-delay-300">
+                        <div class="text-3xl font-display font-bold text-gray-900">{{ stats.reviews|default:"10k" }}+</div>
+                        <div class="text-sm text-gray-500 mt-1">Reviews</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Image Grid -->
+            <div class="hidden lg:block relative animate-fade-in">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div class="aspect-[4/5] rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=400&h=500&fit=crop" alt="Electrician at work" class="w-full h-full object-cover mix-blend-overlay opacity-90">
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 p-6 flex flex-col justify-end shadow-xl">
+                            <div class="text-white">
+                                <div class="text-4xl font-bold">4.9</div>
+                                <div class="flex gap-1 mt-1">
+                                    {% for i in "12345" %}
+                                    <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                    {% endfor %}
+                                </div>
+                                <div class="text-white/80 text-sm mt-2">Average Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <div class="aspect-square rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=400&fit=crop" alt="Plumber" class="w-full h-full object-cover">
+                        </div>
+                        <div class="aspect-[4/5] rounded-2xl bg-gray-100 overflow-hidden shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop" alt="Cleaner" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Card -->
+                <div class="absolute -left-8 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-4 animate-scale-in">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">Verified Pros</div>
+                            <div class="text-sm text-gray-500">Background checked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="section-header">Browse by Category</h2>
+            <p class="section-subheader mx-auto">Find the right professional for every task, from home repairs to business services.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {% for category in categories %}
+            <a href="{% url 'providers:category_detail' slug=category.slug %}" class="group card p-6 text-center hover:border-brand-200">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center group-hover:from-brand-100 group-hover:to-brand-200 transition-all">
+                    {% if category.icon %}
+                    <span class="text-3xl">{{ category.icon }}</span>
+                    {% else %}
+                    <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    {% endif %}
+                </div>
+                <h3 class="font-display font-semibold text-gray-900 group-hover:text-brand-600 transition-colors">{{ category.name }}</h3>
+                <p class="text-sm text-gray-500 mt-1">{{ category.num_providers|default:category.provider_count }} pros</p>
+            </a>
+            {% empty %}
+            <!-- Placeholder categories -->
+            {% for cat_name in "Plumbing,Electrical,Cleaning,HVAC,Painting,Landscaping,Roofing,Moving"|make_list %}
+            <div class="card p-6 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h3 class="font-display font-semibold text-gray-400">Category</h3>
+                <p class="text-sm text-gray-300 mt-1">0 pros</p>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-10">
+            <a href="{% url 'providers:category_list' %}" class="btn-secondary">
+                View All Categories
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Providers -->
+{% if featured_providers %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+                <h2 class="section-header">Featured Professionals</h2>
+                <p class="section-subheader">Top-rated pros ready to help with your next project.</p>
+            </div>
+            <a href="{% url 'providers:search' %}?featured=true" class="btn-secondary mt-4 md:mt-0">
+                View All
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for provider in featured_providers %}
+            <article class="card group">
+                <div class="aspect-[4/3] relative overflow-hidden">
+                    {% if provider.image %}
+                    <img src="{{ provider.image.url }}" alt="{{ provider.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+                        <span class="text-6xl font-display font-bold text-white/30">{{ provider.name|slice:":1" }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if provider.is_verified %}
+                    <span class="absolute top-4 left-4 badge-verified">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Verified
+                    </span>
+                    {% endif %}
+                    
+                    <span class="absolute top-4 right-4 badge-category">{{ provider.category.name }}</span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h3 class="font-display font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors">
+                                <a href="{{ provider.get_absolute_url }}">{{ provider.name }}</a>
+                            </h3>
+                            <p class="text-gray-500 text-sm flex items-center gap-1 mt-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                {{ provider.city }}, {{ provider.state }}
+                            </p>
+                        </div>
+                        <span class="text-lg font-semibold text-brand-600">{{ provider.pricing_range }}</span>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mt-3 line-clamp-2">{{ provider.tagline|default:provider.description|truncatewords:15 }}</p>
+                    
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="flex">
+                                {% for star in provider.get_rating_stars %}
+                                {% if star == 'full' %}
+                                <svg class="rating-star" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                                {% else %}
+                                <svg class="rating-star-empty" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm text-gray-600">{{ provider.average_rating }} ({{ provider.review_count }})</span>
+                        </div>
+                        <a href="{{ provider.get_absolute_url }}" class="text-brand-600 font-medium text-sm hover:text-brand-700">
+                            View Profile →
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- How It Works -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="section-header">How FindAPro Works</h2>
+            <p class="section-subheader mx-auto">Three simple steps to connect with the right professional.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center mx-auto shadow-lg shadow-brand-500/30">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-accent-500 text-white flex items-center justify-center font-bold text-sm shadow-lg">1</span>
+                </div>
+                <h3 class="font-display font-semibold text-xl text-gray-900 mt-6">Search & Browse</h3>
+                <p class="text-gray-600 mt-3">Enter your location and the service you need. Browse profiles and compare pros in your area.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center mx-auto shadow-lg shadow-brand-500/30">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-accent-500 text-white flex items-center justify-center font-bold text-sm shadow-lg">2</span>
+                </div>
+                <h3 class="font-display font-semibold text-xl text-gray-900 mt-6">Read Reviews</h3>
+                <p class="text-gray-600 mt-3">Check verified reviews and ratings from real customers. Make informed decisions with confidence.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center mx-auto shadow-lg shadow-brand-500/30">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-accent-500 text-white flex items-center justify-center font-bold text-sm shadow-lg">3</span>
+                </div>
+                <h3 class="font-display font-semibold text-xl text-gray-900 mt-6">Connect & Hire</h3>
+                <p class="text-gray-600 mt-3">Contact your chosen pro directly. Discuss your project and get the job done right.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-gradient-to-br from-brand-600 to-brand-700 relative overflow-hidden">
+    <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-white">Ready to Find Your Pro?</h2>
+        <p class="text-brand-100 text-lg mt-4 max-w-2xl mx-auto">
+            Join thousands of satisfied customers who found the perfect professional for their needs.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <a href="{% url 'providers:search' %}" class="btn bg-white text-brand-600 hover:bg-brand-50 shadow-xl">
+                Find a Professional
+            </a>
+            <a href="{% url 'accounts:register' %}" class="btn border-2 border-white text-white hover:bg-white/10">
+                Join as a Pro
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,475 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Your Perfect Match | FindAPro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .quiz-step {
+        display: none;
+        animation: slideIn 0.4s ease-out;
+    }
+    
+    .quiz-step.active {
+        display: block;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+    }
+    
+    .quiz-option {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+    
+    .quiz-option:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+    }
+    
+    .quiz-option.selected {
+        border-color: #f97316;
+        background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    }
+    
+    .quiz-option input[type="radio"] {
+        display: none;
+    }
+    
+    .progress-step {
+        transition: all 0.3s ease;
+    }
+    
+    .progress-step.completed {
+        background: #f97316;
+        color: white;
+    }
+    
+    .progress-step.active {
+        background: #fed7aa;
+        border-color: #f97316;
+    }
+    
+    .category-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container py-12 px-4">
+    <div class="max-w-2xl w-full mx-auto">
+        
+        <!-- Progress Bar -->
+        <div class="flex items-center justify-center gap-2 mb-12">
+            {% for step in "12345" %}
+            <div class="progress-step w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold border-2 border-gray-200 bg-white text-gray-400" data-step="{{ forloop.counter }}">
+                {{ forloop.counter }}
+            </div>
+            {% if not forloop.last %}
+            <div class="w-8 h-0.5 bg-gray-200 progress-line" data-line="{{ forloop.counter }}"></div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        
+        <form method="post" id="quizForm">
+            {% csrf_token %}
+            
+            <!-- Step 1: Category -->
+            <div class="quiz-step active" data-step="1">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+                        What do you need help with?
+                    </h1>
+                    <p class="text-gray-600 text-lg">Select the service you're looking for</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {% for category in categories %}
+                    <label class="quiz-option card p-6 text-center hover:shadow-lg">
+                        <input type="radio" name="category" value="{{ category.id }}" required>
+                        <div class="category-icon">{{ category.icon }}</div>
+                        <span class="font-semibold text-gray-900">{{ category.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                
+                <div class="flex justify-end mt-8">
+                    <button type="button" class="btn-primary next-btn" data-next="2">
+                        Continue
+                        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Location -->
+            <div class="quiz-step" data-step="2">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+                        Where are you located?
+                    </h1>
+                    <p class="text-gray-600 text-lg">We'll find providers in your area</p>
+                </div>
+                
+                <div class="max-w-md mx-auto">
+                    <div class="relative">
+                        <input type="text" name="city" id="city" required
+                            class="w-full px-6 py-4 text-xl border-2 border-gray-200 rounded-2xl focus:border-orange-500 focus:outline-none transition-colors"
+                            placeholder="Enter your city...">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="btn-outline prev-btn" data-prev="1">
+                        <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="btn-primary next-btn" data-next="3">
+                        Continue
+                        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Urgency -->
+            <div class="quiz-step" data-step="3">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+                        How soon do you need this done?
+                    </h1>
+                    <p class="text-gray-600 text-lg">This helps us prioritize the right providers</p>
+                </div>
+                
+                <div class="space-y-4 max-w-lg mx-auto">
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="urgency" value="emergency" required>
+                        <span class="text-3xl">🚨</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">Emergency</span>
+                            <span class="text-gray-500 text-sm">I need help TODAY</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="urgency" value="this_week" required>
+                        <span class="text-3xl">📅</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">This Week</span>
+                            <span class="text-gray-500 text-sm">Within the next 7 days</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="urgency" value="this_month" required>
+                        <span class="text-3xl">🗓️</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">This Month</span>
+                            <span class="text-gray-500 text-sm">Within the next 30 days</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="urgency" value="flexible" required>
+                        <span class="text-3xl">🌿</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">No Rush</span>
+                            <span class="text-gray-500 text-sm">Just exploring options</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="btn-outline prev-btn" data-prev="2">
+                        <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="btn-primary next-btn" data-next="4">
+                        Continue
+                        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Budget -->
+            <div class="quiz-step" data-step="4">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+                        What's your budget range?
+                    </h1>
+                    <p class="text-gray-600 text-lg">We'll match you with appropriately-priced providers</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+                    <label class="quiz-option card p-6 text-center">
+                        <input type="radio" name="budget" value="budget" required>
+                        <span class="text-3xl block mb-2">💵</span>
+                        <span class="font-semibold text-gray-900 block">Budget-Friendly</span>
+                        <span class="text-gray-500 text-sm">$</span>
+                    </label>
+                    
+                    <label class="quiz-option card p-6 text-center">
+                        <input type="radio" name="budget" value="mid" required>
+                        <span class="text-3xl block mb-2">💰</span>
+                        <span class="font-semibold text-gray-900 block">Mid-Range</span>
+                        <span class="text-gray-500 text-sm">$$</span>
+                    </label>
+                    
+                    <label class="quiz-option card p-6 text-center">
+                        <input type="radio" name="budget" value="premium" required>
+                        <span class="text-3xl block mb-2">💎</span>
+                        <span class="font-semibold text-gray-900 block">Premium</span>
+                        <span class="text-gray-500 text-sm">$$$</span>
+                    </label>
+                    
+                    <label class="quiz-option card p-6 text-center">
+                        <input type="radio" name="budget" value="any" required>
+                        <span class="text-3xl block mb-2">✨</span>
+                        <span class="font-semibold text-gray-900 block">Any Budget</span>
+                        <span class="text-gray-500 text-sm">Show all</span>
+                    </label>
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="btn-outline prev-btn" data-prev="3">
+                        <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="btn-primary next-btn" data-next="5">
+                        Continue
+                        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 5: Priority -->
+            <div class="quiz-step" data-step="5">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+                        What matters most to you?
+                    </h1>
+                    <p class="text-gray-600 text-lg">We'll prioritize providers that match your values</p>
+                </div>
+                
+                <div class="space-y-4 max-w-lg mx-auto">
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="priority" value="quality" required>
+                        <span class="text-3xl">🏆</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">Quality First</span>
+                            <span class="text-gray-500 text-sm">I want the best work possible</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="priority" value="speed" required>
+                        <span class="text-3xl">⚡</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">Speed & Efficiency</span>
+                            <span class="text-gray-500 text-sm">I need it done fast</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="priority" value="price" required>
+                        <span class="text-3xl">💰</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">Best Value</span>
+                            <span class="text-gray-500 text-sm">I want the best deal</span>
+                        </div>
+                    </label>
+                    
+                    <label class="quiz-option card p-5 flex items-center gap-4">
+                        <input type="radio" name="priority" value="reviews" required>
+                        <span class="text-3xl">⭐</span>
+                        <div>
+                            <span class="font-semibold text-gray-900 block">Highly Reviewed</span>
+                            <span class="text-gray-500 text-sm">I trust what others say</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="btn-outline prev-btn" data-prev="4">
+                        <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        Find My Matches
+                        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('quizForm');
+    const steps = document.querySelectorAll('.quiz-step');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    const progressLines = document.querySelectorAll('.progress-line');
+    let currentStep = 1;
+    
+    // Handle option selection visual feedback
+    document.querySelectorAll('.quiz-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Find the parent step
+            const step = this.closest('.quiz-step');
+            const stepNumber = parseInt(step.dataset.step);
+            
+            // Remove selected class from siblings
+            step.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to this option
+            this.classList.add('selected');
+            
+            // Check the radio
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
+        });
+    });
+    
+    // Update progress indicators
+    function updateProgress(step) {
+        progressSteps.forEach((ps, index) => {
+            const stepNum = index + 1;
+            ps.classList.remove('completed', 'active');
+            
+            if (stepNum < step) {
+                ps.classList.add('completed');
+                ps.innerHTML = '✓';
+            } else if (stepNum === step) {
+                ps.classList.add('active');
+                ps.innerHTML = stepNum;
+            } else {
+                ps.innerHTML = stepNum;
+            }
+        });
+        
+        progressLines.forEach((line, index) => {
+            const lineNum = index + 1;
+            if (lineNum < step) {
+                line.style.background = '#f97316';
+            } else {
+                line.style.background = '#e5e7eb';
+            }
+        });
+    }
+    
+    // Navigate to step
+    function goToStep(step) {
+        steps.forEach(s => {
+            s.classList.remove('active');
+            if (parseInt(s.dataset.step) === step) {
+                s.classList.add('active');
+            }
+        });
+        currentStep = step;
+        updateProgress(step);
+    }
+    
+    // Validate current step
+    function validateStep(step) {
+        const currentStepEl = document.querySelector(`.quiz-step[data-step="${step}"]`);
+        
+        if (step === 2) {
+            const city = currentStepEl.querySelector('input[name="city"]');
+            if (!city.value.trim()) {
+                city.focus();
+                city.classList.add('border-red-500');
+                return false;
+            }
+            city.classList.remove('border-red-500');
+        } else {
+            const radio = currentStepEl.querySelector('input[type="radio"]:checked');
+            if (!radio) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // Next button handlers
+    document.querySelectorAll('.next-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const nextStep = parseInt(this.dataset.next);
+            if (validateStep(currentStep)) {
+                goToStep(nextStep);
+            }
+        });
+    });
+    
+    // Previous button handlers
+    document.querySelectorAll('.prev-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const prevStep = parseInt(this.dataset.prev);
+            goToStep(prevStep);
+        });
+    });
+    
+    // Initialize
+    updateProgress(1);
+});
+</script>
+{% endblock %}
+

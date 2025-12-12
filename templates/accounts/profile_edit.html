@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="card p-8">
+            <div class="mb-8">
+                <h1 class="text-2xl font-display font-bold text-gray-900">Edit Profile</h1>
+                <p class="text-gray-600 mt-1">Update your personal information</p>
+            </div>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Avatar -->
+                <div class="flex items-center gap-6">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="{{ user.full_name }}" class="w-24 h-24 rounded-2xl object-cover">
+                    {% else %}
+                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center">
+                        <span class="text-2xl font-bold text-white">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</span>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <label for="id_avatar" class="btn-secondary text-sm cursor-pointer">
+                            Change Photo
+                        </label>
+                        <input type="file" name="avatar" id="id_avatar" accept="image/*" class="hidden">
+                        <p class="text-xs text-gray-500 mt-2">JPG, PNG up to 5MB</p>
+                    </div>
+                </div>
+                
+                <!-- Name -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="id_last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Phone -->
+                <div>
+                    <label for="id_phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.phone.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Bio -->
+                <div>
+                    <label for="id_bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                    {{ form.bio }}
+                    {% if form.bio.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.bio.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Location -->
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="id_city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        {{ form.city }}
+                    </div>
+                    <div>
+                        <label for="id_state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                        {{ form.state }}
+                    </div>
+                    <div>
+                        <label for="id_zip_code" class="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
+                        {{ form.zip_code }}
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+                    <a href="{% url 'accounts:dashboard' %}" class="text-gray-600 hover:text-gray-900">Cancel</a>
+                    <button type="submit" class="btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Preview avatar before upload
+document.getElementById('id_avatar').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.querySelector('img[alt="{{ user.full_name }}"]');
+            if (img) {
+                img.src = e.target.result;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}
+

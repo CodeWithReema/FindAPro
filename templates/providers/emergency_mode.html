@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}🚨 Emergency Services | FindAPro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .emergency-hero {
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .emergency-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .pulse-ring {
+        animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(0.8);
+            opacity: 1;
+        }
+        80%, 100% {
+            transform: scale(1.4);
+            opacity: 0;
+        }
+    }
+    
+    .available-badge {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+    
+    .emergency-card {
+        border-left: 4px solid #dc2626;
+        transition: all 0.2s ease;
+    }
+    
+    .emergency-card:hover {
+        border-left-color: #16a34a;
+        transform: translateY(-2px);
+    }
+    
+    .shake {
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Emergency Hero -->
+<section class="emergency-hero text-white py-12 md:py-16">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <!-- Pulsing Emergency Icon -->
+            <div class="inline-flex items-center justify-center mb-6 relative">
+                <div class="absolute w-20 h-20 bg-white/20 rounded-full pulse-ring"></div>
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                    <span class="text-3xl">🚨</span>
+                </div>
+            </div>
+            
+            <h1 class="text-3xl md:text-5xl font-display font-bold mb-4">
+                Emergency Mode
+            </h1>
+            <p class="text-xl text-red-100 max-w-2xl mx-auto mb-8">
+                Need help right now? Find pros who are available for urgent jobs.
+            </p>
+            
+            <!-- Quick Filter -->
+            <form method="GET" class="max-w-3xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+                    <select name="category" class="flex-1 px-4 py-3 rounded-xl bg-white text-gray-900 border-0 focus:ring-2 focus:ring-white">
+                        <option value="">All Services</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>
+                            {{ cat.icon }} {{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="city" value="{{ selected_city }}" 
+                           placeholder="Your city..." 
+                           class="flex-1 px-4 py-3 rounded-xl bg-white text-gray-900 border-0 focus:ring-2 focus:ring-white">
+                    <button type="submit" class="px-6 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors whitespace-nowrap">
+                        Find Help Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Results -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {% if available_now %}
+        <!-- Available NOW Section -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <h2 class="text-2xl font-display font-bold text-gray-900">
+                    Available RIGHT NOW
+                </h2>
+                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                    {{ available_now|length }} provider{{ available_now|length|pluralize }}
+                </span>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for provider in available_now %}
+                <div class="emergency-card card p-6 hover:shadow-xl">
+                    <div class="flex items-start gap-4">
+                        {% if provider.image %}
+                        <img src="{{ provider.image.url }}" alt="{{ provider.name }}" 
+                             class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
+                        {% else %}
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-2xl font-bold">{{ provider.name|slice:":1" }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-display font-bold text-gray-900 truncate">{{ provider.name }}</h3>
+                                {% if provider.is_verified %}
+                                <span class="text-blue-500" title="Verified">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                                <span>{{ provider.category.icon }} {{ provider.category.name }}</span>
+                                <span>•</span>
+                                <span>{{ provider.city }}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="available-badge inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    Available Now
+                                </span>
+                                {% if provider.avg_rating %}
+                                <span class="flex items-center gap-1 text-sm">
+                                    <span class="text-amber-400">★</span>
+                                    <span class="font-medium">{{ provider.avg_rating|floatformat:1 }}</span>
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if provider.emergency_rate_info %}
+                            <p class="text-xs text-gray-500 mb-3">
+                                ⚡ {{ provider.emergency_rate_info }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-4">
+                        {% if provider.phone %}
+                        <a href="tel:{{ provider.phone }}" 
+                           class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            Call Now
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'providers:provider_detail' provider.slug %}" 
+                           class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if available_soon %}
+        <!-- Other Emergency Providers -->
+        <div>
+            <div class="flex items-center gap-3 mb-6">
+                <h2 class="text-2xl font-display font-bold text-gray-900">
+                    Other Emergency Providers
+                </h2>
+                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold">
+                    {{ available_soon|length }} provider{{ available_soon|length|pluralize }}
+                </span>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for provider in available_soon %}
+                <div class="card p-6 hover:shadow-xl transition-shadow border-l-4 border-amber-400">
+                    <div class="flex items-start gap-4">
+                        {% if provider.image %}
+                        <img src="{{ provider.image.url }}" alt="{{ provider.name }}" 
+                             class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
+                        {% else %}
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-2xl font-bold">{{ provider.name|slice:":1" }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-display font-bold text-gray-900 truncate">{{ provider.name }}</h3>
+                                {% if provider.is_verified %}
+                                <span class="text-blue-500" title="Verified">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                                <span>{{ provider.category.icon }} {{ provider.category.name }}</span>
+                                <span>•</span>
+                                <span>{{ provider.city }}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+                                    ⚡ Accepts Emergencies
+                                </span>
+                                {% if provider.avg_rating %}
+                                <span class="flex items-center gap-1 text-sm">
+                                    <span class="text-amber-400">★</span>
+                                    <span class="font-medium">{{ provider.avg_rating|floatformat:1 }}</span>
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if provider.emergency_rate_info %}
+                            <p class="text-xs text-gray-500 mb-3">
+                                ⚡ {{ provider.emergency_rate_info }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-4">
+                        {% if provider.phone %}
+                        <a href="tel:{{ provider.phone }}" 
+                           class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-white font-semibold rounded-xl hover:bg-amber-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            Call
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'providers:provider_detail' provider.slug %}" 
+                           class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if not available_now and not available_soon %}
+        <!-- No Results -->
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-red-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <span class="text-5xl">😔</span>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-900 mb-3">
+                No Emergency Providers Found
+            </h2>
+            <p class="text-gray-600 mb-6 max-w-md mx-auto">
+                {% if selected_category or selected_city %}
+                Try adjusting your filters or search in a different area.
+                {% else %}
+                We're working on adding more emergency-ready providers.
+                {% endif %}
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="{% url 'providers:emergency' %}" class="btn-outline">
+                    Clear Filters
+                </a>
+                <a href="{% url 'providers:search' %}" class="btn-primary">
+                    Browse All Providers
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Emergency Tips -->
+        <div class="mt-16 bg-white rounded-2xl p-8 border border-gray-200">
+            <h3 class="text-xl font-display font-bold text-gray-900 mb-6 text-center">
+                💡 Emergency Tips
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl mx-auto mb-3 flex items-center justify-center">
+                        <span class="text-2xl">📞</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Call Directly</h4>
+                    <p class="text-sm text-gray-600">For emergencies, calling is faster than messaging. Use the Call Now button.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl mx-auto mb-3 flex items-center justify-center">
+                        <span class="text-2xl">📍</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Have Your Address Ready</h4>
+                    <p class="text-sm text-gray-600">Save time by having your full address ready when you call.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl mx-auto mb-3 flex items-center justify-center">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-1">Expect Premium Rates</h4>
+                    <p class="text-sm text-gray-600">Emergency/after-hours service typically costs more than scheduled visits.</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,370 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FindAPro - Find skilled local professionals for plumbing, electrical, cleaning, and more. Read reviews and book trusted service providers in your area.">
+    
+    <title>{% block title %}FindAPro{% endblock %} | Local Services Marketplace</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- TailwindCSS -->
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{% url 'core:home' %}" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/25 group-hover:shadow-brand-500/40 transition-shadow">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-display font-bold text-xl text-gray-900">Find<span class="text-brand-600">APro</span></span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="{% url 'providers:emergency' %}" class="nav-link flex items-center gap-1 text-red-600 hover:text-red-700">
+                        <span class="text-lg">🚨</span> Emergency
+                    </a>
+                    <a href="{% url 'providers:smart_match' %}" class="nav-link flex items-center gap-1">
+                        <span class="text-lg">🎯</span> Match Quiz
+                    </a>
+                    <a href="{% url 'providers:search' %}" class="nav-link">Find Pros</a>
+                    <a href="{% url 'providers:category_list' %}" class="nav-link">Categories</a>
+                    {% if nav_categories %}
+                    <div class="relative group">
+                        <button class="nav-link flex items-center gap-1">
+                            Services
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                            <div class="py-2">
+                                {% for cat in nav_categories %}
+                                <a href="{% url 'providers:category_detail' slug=cat.slug %}" class="block px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                                    {{ cat.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Auth Buttons -->
+                <div class="flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors">
+                            {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-8 h-8 rounded-full object-cover">
+                            {% else %}
+                            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-semibold">
+                                {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                            </div>
+                            {% endif %}
+                            <span class="font-medium text-gray-700 hidden sm:block">{{ user.first_name|default:user.username }}</span>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <div class="py-2">
+                                <a href="{% url 'accounts:dashboard' %}" class="block px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        </svg>
+                                        Dashboard
+                                    </span>
+                                </a>
+                                <a href="{% url 'accounts:profile_edit' %}" class="block px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                        Edit Profile
+                                    </span>
+                                </a>
+                                <a href="{% url 'providers:favorites' %}" class="block px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                        My Favorites
+                                    </span>
+                                </a>
+                                <a href="{% url 'providers:my_quotes' %}" class="block px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        My Quotes
+                                    </span>
+                                </a>
+                                <hr class="my-2 border-gray-100">
+                                <a href="{% url 'accounts:logout' %}" class="block px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        Sign Out
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="nav-link hidden sm:block">Sign In</a>
+                    <a href="{% url 'accounts:register' %}" class="btn-primary text-sm px-4 py-2">Get Started</a>
+                    {% endif %}
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+            <div class="px-4 py-4 space-y-2 bg-white">
+                <a href="{% url 'providers:search' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Find Pros</a>
+                <a href="{% url 'providers:category_list' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Categories</a>
+                {% if not user.is_authenticated %}
+                <hr class="my-2">
+                <a href="{% url 'accounts:login' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Sign In</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
+        {% for message in messages %}
+        <div class="animate-slide-down px-4 py-3 rounded-xl shadow-lg {{ message.tags }} flex items-center gap-3" role="alert">
+            {% if 'success' in message.tags %}
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% elif 'error' in message.tags %}
+            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% else %}
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {% endif %}
+            <span class="font-medium">{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="font-display font-bold text-xl text-white">Find<span class="text-brand-400">APro</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-4 max-w-md">
+                        Find skilled local professionals for all your home and business needs. Trusted reviews, verified providers, and easy booking.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h3 class="font-display font-semibold text-white mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'providers:search' %}" class="hover:text-brand-400 transition-colors">Find Pros</a></li>
+                        <li><a href="{% url 'providers:category_list' %}" class="hover:text-brand-400 transition-colors">Categories</a></li>
+                        <li><a href="{% url 'core:about' %}" class="hover:text-brand-400 transition-colors">About Us</a></li>
+                        <li><a href="{% url 'core:contact' %}" class="hover:text-brand-400 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-display font-semibold text-white mb-4">For Pros</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'accounts:register' %}" class="hover:text-brand-400 transition-colors">Join as Pro</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">How it Works</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Success Stories</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">© 2025 FindAPro. All rights reserved.</p>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-brand-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-brand-400 transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Floating Compare Bar -->
+    <div id="compare-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg transform translate-y-full transition-transform duration-300 z-50" style="display: none;">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-gray-600 font-medium">⚖️ Compare:</span>
+                <div id="compare-items" class="flex gap-2">
+                    <!-- Items added via JS -->
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span id="compare-count" class="text-sm text-gray-500">0/3 selected</span>
+                <button onclick="clearCompare()" class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900">
+                    Clear
+                </button>
+                <a id="compare-btn" href="{% url 'providers:compare' %}" class="px-4 py-2 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-colors text-sm">
+                    Compare Now
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Auto-dismiss messages
+        setTimeout(() => {
+            document.querySelectorAll('[role="alert"]').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(100%)';
+                setTimeout(() => el.remove(), 300);
+            });
+        }, 5000);
+        
+        // Compare functionality
+        let compareList = JSON.parse(localStorage.getItem('compareProviders') || '[]');
+        
+        function updateCompareBar() {
+            const bar = document.getElementById('compare-bar');
+            const items = document.getElementById('compare-items');
+            const count = document.getElementById('compare-count');
+            const btn = document.getElementById('compare-btn');
+            
+            if (compareList.length > 0) {
+                bar.style.display = 'block';
+                setTimeout(() => bar.classList.remove('translate-y-full'), 10);
+                
+                items.innerHTML = compareList.map(p => `
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg">
+                        <span class="text-sm font-medium text-gray-700">${p.name}</span>
+                        <button onclick="removeFromCompare(${p.id})" class="text-gray-400 hover:text-red-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+                
+                count.textContent = `${compareList.length}/3 selected`;
+                btn.href = `{% url 'providers:compare' %}?ids=${compareList.map(p => p.id).join(',')}`;
+            } else {
+                bar.classList.add('translate-y-full');
+                setTimeout(() => bar.style.display = 'none', 300);
+            }
+            
+            // Update all compare buttons on page
+            document.querySelectorAll('[data-compare-id]').forEach(btn => {
+                const id = parseInt(btn.dataset.compareId);
+                const isInList = compareList.some(p => p.id === id);
+                if (isInList) {
+                    btn.classList.add('bg-brand-600', 'text-white');
+                    btn.classList.remove('bg-gray-100', 'text-gray-700');
+                    btn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Added';
+                } else {
+                    btn.classList.remove('bg-brand-600', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                    btn.innerHTML = '⚖️ Compare';
+                }
+            });
+            
+            localStorage.setItem('compareProviders', JSON.stringify(compareList));
+        }
+        
+        function toggleCompare(id, name) {
+            const index = compareList.findIndex(p => p.id === id);
+            if (index > -1) {
+                compareList.splice(index, 1);
+            } else if (compareList.length < 3) {
+                compareList.push({ id, name });
+            } else {
+                alert('You can compare up to 3 providers at a time.');
+                return;
+            }
+            updateCompareBar();
+        }
+        
+        function removeFromCompare(id) {
+            compareList = compareList.filter(p => p.id !== id);
+            updateCompareBar();
+        }
+        
+        function clearCompare() {
+            compareList = [];
+            updateCompareBar();
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateCompareBar);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
