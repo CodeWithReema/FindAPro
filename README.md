@@ -2,6 +2,10 @@
 
 A modern Angie's List-style platform built with Django 5, Django REST Framework, TailwindCSS, PostgreSQL, and Docker. Connect with local professionals for plumbing, electrical, cleaning, mechanics, and more.
 
+<div align="center">
+  <img src="docs/images/homepage.png" alt="FindAPro Homepage" width="900"/>
+</div>
+
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![Django](https://img.shields.io/badge/Django-5.0-green)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-cyan)
