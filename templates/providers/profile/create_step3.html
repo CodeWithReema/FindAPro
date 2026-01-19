@@ -1,0 +1,191 @@
+{% extends 'providers/profile/create_base.html' %}
+
+{% block step_content %}
+<div class="mb-6">
+    <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Business Details</h3>
+    <p class="text-gray-600">Tell us about your pricing and experience</p>
+</div>
+
+<form method="POST" id="profile-form" class="space-y-8">
+    {% csrf_token %}
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label for="{{ form.pricing_range.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                Pricing Range <span class="text-red-500">*</span>
+            </label>
+            {{ form.pricing_range }}
+            {% if form.pricing_range.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.pricing_range.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.years_experience.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                Years of Experience <span class="text-red-500">*</span>
+            </label>
+            {{ form.years_experience }}
+            {% if form.years_experience.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.years_experience.errors.0 }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Business Hours -->
+    <div class="border-t pt-6">
+        <h4 class="text-lg font-semibold text-gray-900 mb-4">Business Hours (Optional)</h4>
+        <p class="text-sm text-gray-600 mb-4">Set your weekly business hours. Leave blank if hours vary.</p>
+        <div class="space-y-4">
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Monday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.monday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="monday_hours">
+                    {{ hours_form.monday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.monday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Tuesday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.tuesday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="tuesday_hours">
+                    {{ hours_form.tuesday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.tuesday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Wednesday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.wednesday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="wednesday_hours">
+                    {{ hours_form.wednesday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.wednesday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Thursday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.thursday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="thursday_hours">
+                    {{ hours_form.thursday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.thursday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Friday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.friday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="friday_hours">
+                    {{ hours_form.friday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.friday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Saturday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.saturday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="saturday_hours">
+                    {{ hours_form.saturday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.saturday_close }}
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="w-24 text-sm font-medium text-gray-700">Sunday</div>
+                <label class="flex items-center gap-2">
+                    {{ hours_form.sunday_closed }}
+                    <span class="text-sm text-gray-600">Closed</span>
+                </label>
+                <div class="flex items-center gap-2 flex-1" id="sunday_hours">
+                    {{ hours_form.sunday_open }}
+                    <span class="text-gray-500">to</span>
+                    {{ hours_form.sunday_close }}
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <label for="{{ hours_form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+            {{ hours_form.notes }}
+        </div>
+    </div>
+    
+    <!-- Service Areas -->
+    <div class="border-t pt-6">
+        <h4 class="text-lg font-semibold text-gray-900 mb-4">Service Areas (Optional)</h4>
+        <p class="text-sm text-gray-600 mb-4">Add the areas where you provide service</p>
+        {{ area_formset.management_form }}
+        <div id="service-areas" class="space-y-4">
+            {% for form in area_formset %}
+            <div class="grid md:grid-cols-5 gap-4 items-end p-4 border border-gray-200 rounded-lg">
+                {{ form.id }}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
+                    {{ form.zip_code }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    {{ form.city }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                    {{ form.state }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Radius (miles)</label>
+                    {{ form.radius_miles }}
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="flex items-center gap-2">
+                        {{ form.is_primary }}
+                        <span class="text-sm text-gray-600">Primary</span>
+                    </label>
+                    {% if form.DELETE %}
+                    <label class="flex items-center gap-2">
+                        {{ form.DELETE }}
+                        <span class="text-sm text-red-600">Delete</span>
+                    </label>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="text-xs text-gray-500 mt-2">You can add more service areas after your profile is created.</p>
+    </div>
+</form>
+
+<script>
+function toggleDayHours(day, isClosed) {
+    const hoursDiv = document.getElementById(day + '_hours');
+    const openInput = document.getElementById(day + '_open');
+    const closeInput = document.getElementById(day + '_close');
+    
+    if (isClosed) {
+        hoursDiv.style.opacity = '0.5';
+        openInput.disabled = true;
+        closeInput.disabled = true;
+    } else {
+        hoursDiv.style.opacity = '1';
+        openInput.disabled = false;
+        closeInput.disabled = false;
+    }
+}
+</script>
+{% endblock %}

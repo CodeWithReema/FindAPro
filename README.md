@@ -30,6 +30,11 @@ A modern Angie's List-style platform built with Django 5, Django REST Framework,
 - **Favorites System** - Save providers to your favorites list for quick access
 - **Quote Request System** - Request quotes from providers, track responses, and manage requests
 - **Provider Gallery/Portfolio** - View provider work samples with lightbox image viewer
+- **Provider Profile Creation** - Multi-step profile builder for professionals to join and create business profiles
+- **Business Hours Management** - Set weekly business hours for each day of the week
+- **Service Areas** - Define coverage zones with ZIP codes and radius
+- **Certifications & Licenses** - Optional certification tracking with verification documents
+- **Profile Completeness Tracking** - Real-time completion percentage with 50% minimum to go live
 
 ## Tech Stack
 
@@ -209,6 +214,13 @@ When using Docker, the Tailwind watcher runs in a separate container automatical
 - `/providers/quotes/received/` - Provider's received quotes
 - `/providers/<slug>/request-quote/` - Request a quote
 
+### Provider Profile Routes
+- `/providers/join/` - Join as a professional (landing page)
+- `/providers/profile/create/` - Multi-step profile creation wizard
+- `/providers/profile/preview/` - Preview profile before submission
+- `/providers/profile/status/` - View profile status and completion
+- `/providers/profile/edit/` - Edit existing provider profile
+
 ### Admin
 - `/admin/` - Django admin panel
 
@@ -301,6 +313,36 @@ View provider portfolios:
 
 **Access**: View on provider detail pages
 
+### 👔 Provider Profile Creation
+Comprehensive multi-step profile builder for professionals:
+
+**5-Step Creation Process:**
+1. **Basic Information** - Business name, category, tagline, description, skills
+2. **Contact & Location** - Email, phone, website, full address
+3. **Business Details** - Pricing range, years of experience, business hours, service areas
+4. **Media & Portfolio** - Logo upload, main image, gallery images
+5. **Availability & Emergency** - Availability status, emergency acceptance, rate information
+
+**Key Features:**
+- **Draft Mode** - Save progress and complete later
+- **Progress Tracking** - Real-time completion percentage with visual progress bar
+- **50% Minimum** - Must complete at least 50% of profile to submit
+- **Immediate Activation** - Profiles go live immediately upon submission (no approval needed)
+- **Business Hours** - Set weekly schedule for each day (open/close times or closed)
+- **Service Areas** - Add multiple service locations with ZIP codes and radius
+- **Certifications** - Optional certification tracking (admin verification available)
+
+**Registration Flow:**
+- New users can select "Service Provider" during registration → automatically redirected to profile creation
+- Existing users can click "Join as Pro" from navigation or homepage
+- One profile per user (enforced)
+
+**URLs**: 
+- Join: `/providers/join/`
+- Create: `/providers/profile/create/`
+- Status: `/providers/profile/status/`
+- Edit: `/providers/profile/edit/`
+
 ## API Endpoints
 
 ### Providers
@@ -340,6 +382,7 @@ GET    /api/reviews/my_reviews/  # Current user's reviews
 - Extended Django AbstractUser
 - User types: Customer, Service Provider
 - Profile fields: phone, avatar, bio, city, state, zip_code
+- Properties: is_provider, is_customer, has_provider_profile, full_name
 
 ### ServiceCategory
 - name, slug, description, icon, image
@@ -351,9 +394,11 @@ GET    /api/reviews/my_reviews/  # Current user's reviews
 - Location: address, city, state, zip_code
 - Business: pricing_range, years_experience
 - Media: image, logo
-- Status: is_verified, is_active, is_featured
+- Status: is_verified, is_active, is_featured, is_draft
+- Approval: approval_status (draft, approved, rejected, suspended), approved_at, submitted_for_review_at
 - Emergency: is_available_now, accepts_emergency, emergency_rate_info
-- Computed: average_rating, review_count
+- Computed: average_rating, review_count, completion_percentage
+- Methods: can_submit(), calculate_completion_percentage()
 
 ### ProviderReview
 - user, provider (FK)
@@ -378,6 +423,27 @@ GET    /api/reviews/my_reviews/  # Current user's reviews
 - Status: pending, viewed, quoted, accepted, declined, expired
 - Provider Response: quote_amount, quote_message, quoted_at
 - is_emergency flag for urgent requests
+
+### BusinessHours
+- provider (OneToOne FK)
+- Monday-Sunday: open, close, closed (for each day)
+- notes (additional availability information)
+
+### ServiceArea
+- provider (FK)
+- zip_code, city, state
+- radius_miles (service radius in miles)
+- is_primary (primary service location flag)
+- created_at
+
+### ProviderCertification
+- provider (FK)
+- name, issuing_organization, license_number
+- issue_date, expiry_date
+- verification_document (file upload)
+- is_verified (admin verified flag)
+- created_at, updated_at
+- Property: is_expired (checks expiry date)
 
 ## Environment Variables
 

@@ -1,0 +1,86 @@
+{% extends 'providers/profile/create_base.html' %}
+
+{% block step_content %}
+<div class="mb-6">
+    <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Contact & Location</h3>
+    <p class="text-gray-600">How can customers reach you?</p>
+</div>
+
+<form method="POST" id="profile-form" class="space-y-6">
+    {% csrf_token %}
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                Email Address <span class="text-red-500">*</span>
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number <span class="text-red-500">*</span>
+            </label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.phone.errors.0 }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div>
+        <label for="{{ form.website.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+            Website (Optional)
+        </label>
+        {{ form.website }}
+        {% if form.website.errors %}
+        <p class="mt-1 text-sm text-red-600">{{ form.website.errors.0 }}</p>
+        {% endif %}
+    </div>
+    
+    <div>
+        <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+            Street Address (Optional)
+        </label>
+        {{ form.address }}
+        {% if form.address.errors %}
+        <p class="mt-1 text-sm text-red-600">{{ form.address.errors.0 }}</p>
+        {% endif %}
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-6">
+        <div>
+            <label for="{{ form.city.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                City <span class="text-red-500">*</span>
+            </label>
+            {{ form.city }}
+            {% if form.city.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.city.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.state.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                State <span class="text-red-500">*</span>
+            </label>
+            {{ form.state }}
+            {% if form.state.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.state.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.zip_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                ZIP Code <span class="text-red-500">*</span>
+            </label>
+            {{ form.zip_code }}
+            {% if form.zip_code.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ form.zip_code.errors.0 }}</p>
+            {% endif %}
+        </div>
+    </div>
+</form>
+{% endblock %}

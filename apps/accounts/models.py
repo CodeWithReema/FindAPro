@@ -57,4 +57,9 @@ class CustomUser(AbstractUser):
     def is_customer(self):
         """Check if user is a customer."""
         return self.user_type == 'customer'
+    
+    @property
+    def has_provider_profile(self):
+        """Check if user has a provider profile."""
+        return hasattr(self, 'provider_profile')
 

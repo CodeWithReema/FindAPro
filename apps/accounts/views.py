@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.views.generic import CreateView, UpdateView, TemplateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm
 
@@ -24,6 +24,15 @@ class RegisterView(CreateView):
         response = super().form_valid(form)
         login(self.request, self.object)
         messages.success(self.request, f'Welcome to FindAPro, {self.object.first_name}!')
+        
+        # If user selected provider type, redirect to profile creation
+        if self.object.user_type == 'provider':
+            messages.info(
+                self.request,
+                'Let\'s set up your professional profile! Complete the steps below to get started.'
+            )
+            return redirect('providers:join_as_pro')
+        
         return response
     
     def dispatch(self, request, *args, **kwargs):
@@ -50,8 +59,18 @@ class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('core:home')
     
     def dispatch(self, request, *args, **kwargs):
-        messages.info(request, 'You have been logged out.')
+        # Only show message if user is authenticated
+        if request.user.is_authenticated:
+            messages.success(request, 'You have been successfully logged out.')
         return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        """Handle POST request for logout."""
+        return super().post(request, *args, **kwargs)
+    
+    def get_next_page(self):
+        """Ensure we always redirect to home page."""
+        return reverse('core:home')
 
 
 class UserDashboardView(TemplateView):
