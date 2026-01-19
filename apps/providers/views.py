@@ -3,18 +3,27 @@ Views for providers app - Template views.
 """
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.db.models import Q, Avg, Count
 from django.utils import timezone
 from django.urls import reverse
+from django.utils.text import slugify
 
-from .models import ServiceCategory, ServiceProvider, FavoriteProvider, QuoteRequest
-from .forms import QuoteRequestForm, QuoteResponseForm, MatchingQuizForm
+from .models import (
+    ServiceCategory, ServiceProvider, FavoriteProvider, QuoteRequest,
+    BusinessHours, ServiceArea, ProviderCertification
+)
+from .forms import (
+    QuoteRequestForm, QuoteResponseForm, MatchingQuizForm,
+    ProviderBasicInfoForm, ProviderContactLocationForm, ProviderBusinessDetailsForm,
+    BusinessHoursForm, ServiceAreaForm, ServiceAreaFormSet,
+    ProviderMediaForm, ProviderAvailabilityForm
+)
 
 
 class ProviderSearchView(ListView):
@@ -627,4 +636,331 @@ def get_match_reasons(provider, urgency, budget, priority):
         reasons.append("🌟 Featured provider")
     
     return reasons[:4]  # Return max 4 reasons
+
+
+# ============================================================================
+# Provider Profile Creation Views
+# ============================================================================
+
+class JoinAsProView(LoginRequiredMixin, TemplateView):
+    """Landing page for users to join as a professional."""
+    
+    template_name = 'providers/join_as_pro.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        # If user already has a provider profile, redirect to edit
+        if hasattr(request.user, 'provider_profile'):
+            messages.info(request, 'You already have a provider profile. You can edit it below.')
+            return redirect('providers:profile_edit')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = ServiceCategory.objects.filter(is_active=True)
+        return context
+
+
+@login_required
+def provider_profile_create(request):
+    """
+    Multi-step provider profile creation wizard.
+    Handles 5 steps of profile creation with session-based state management.
+    """
+    # Check if user already has a profile
+    if hasattr(request.user, 'provider_profile'):
+        messages.info(request, 'You already have a provider profile.')
+        return redirect('providers:profile_edit')
+    
+    # Get current step from session or default to 1
+    current_step = int(request.session.get('profile_create_step', 1))
+    total_steps = 5
+    
+    # Handle step navigation
+    if 'step' in request.GET:
+        step = int(request.GET.get('step'))
+        if 1 <= step <= total_steps:
+            current_step = step
+            request.session['profile_create_step'] = current_step
+    
+    # Initialize provider instance (may be draft)
+    provider = None
+    if hasattr(request.user, 'provider_profile'):
+        provider = request.user.provider_profile
+    else:
+        # Check if there's a draft in session
+        provider_id = request.session.get('draft_provider_id')
+        if provider_id:
+            try:
+                provider = ServiceProvider.objects.get(id=provider_id, user=request.user, is_draft=True)
+            except ServiceProvider.DoesNotExist:
+                pass
+    
+    # Step 1: Basic Information
+    if current_step == 1:
+        if request.method == 'POST':
+            form = ProviderBasicInfoForm(request.POST, instance=provider)
+            if form.is_valid():
+                provider = form.save(commit=False)
+                if not provider.user:
+                    provider.user = request.user
+                if not provider.slug:
+                    provider.slug = slugify(provider.name)
+                    # Handle duplicate slugs
+                    base_slug = provider.slug
+                    counter = 1
+                    while ServiceProvider.objects.filter(slug=provider.slug).exists():
+                        provider.slug = f"{base_slug}-{counter}"
+                        counter += 1
+                provider.is_draft = True
+                provider.approval_status = 'draft'
+                provider.save()
+                request.session['draft_provider_id'] = provider.id
+                request.session['profile_create_step'] = 2
+                messages.success(request, 'Basic information saved!')
+                return redirect('providers:profile_create')
+        else:
+            form = ProviderBasicInfoForm(instance=provider)
+        
+        progress_percentage = provider.completion_percentage if provider else (current_step / total_steps * 100)
+        return render(request, 'providers/profile/create_step1.html', {
+            'form': form,
+            'current_step': current_step,
+            'total_steps': total_steps,
+            'provider': provider,
+            'progress_percentage': progress_percentage,
+        })
+    
+    # Ensure we have a provider before proceeding to other steps
+    if not provider:
+        messages.warning(request, 'Please complete Step 1 first.')
+        return redirect('providers:profile_create?step=1')
+    
+    # Step 2: Contact & Location
+    if current_step == 2:
+        if request.method == 'POST':
+            form = ProviderContactLocationForm(request.POST, instance=provider, user=request.user)
+            if form.is_valid():
+                form.save()
+                request.session['profile_create_step'] = 3
+                messages.success(request, 'Contact information saved!')
+                return redirect('providers:profile_create')
+        else:
+            form = ProviderContactLocationForm(instance=provider, user=request.user)
+        
+        progress_percentage = provider.completion_percentage if provider else (current_step / total_steps * 100)
+        return render(request, 'providers/profile/create_step2.html', {
+            'form': form,
+            'current_step': current_step,
+            'total_steps': total_steps,
+            'provider': provider,
+            'progress_percentage': progress_percentage,
+        })
+    
+    # Step 3: Business Details
+    if current_step == 3:
+        if request.method == 'POST':
+            form = ProviderBusinessDetailsForm(request.POST, instance=provider)
+            # Handle business hours manually since we're using custom field names
+            hours_instance = getattr(provider, 'business_hours', None)
+            if hours_instance:
+                hours_form = BusinessHoursForm(request.POST, instance=hours_instance)
+            else:
+                hours_form = BusinessHoursForm(request.POST)
+            area_formset = ServiceAreaFormSet(request.POST, instance=provider)
+            
+            if form.is_valid() and hours_form.is_valid() and area_formset.is_valid():
+                form.save()
+                # Save business hours
+                hours = hours_form.save(commit=False)
+                hours.provider = provider
+                hours.save()
+                # Save service areas
+                area_formset.save()
+                request.session['profile_create_step'] = 4
+                messages.success(request, 'Business details saved!')
+                return redirect('providers:profile_create')
+        else:
+            form = ProviderBusinessDetailsForm(instance=provider)
+            # Get or create business hours instance
+            hours_instance, created = BusinessHours.objects.get_or_create(provider=provider)
+            hours_form = BusinessHoursForm(instance=hours_instance)
+            area_formset = ServiceAreaFormSet(instance=provider)
+        
+        progress_percentage = provider.completion_percentage if provider else (current_step / total_steps * 100)
+        return render(request, 'providers/profile/create_step3.html', {
+            'form': form,
+            'hours_form': hours_form,
+            'area_formset': area_formset,
+            'current_step': current_step,
+            'total_steps': total_steps,
+            'provider': provider,
+            'progress_percentage': progress_percentage,
+        })
+    
+    # Step 4: Media & Portfolio
+    if current_step == 4:
+        if request.method == 'POST':
+            form = ProviderMediaForm(request.POST, request.FILES, instance=provider)
+            if form.is_valid():
+                form.save()
+                request.session['profile_create_step'] = 5
+                messages.success(request, 'Media uploaded!')
+                return redirect('providers:profile_create')
+        else:
+            form = ProviderMediaForm(instance=provider)
+        
+        progress_percentage = provider.completion_percentage if provider else (current_step / total_steps * 100)
+        return render(request, 'providers/profile/create_step4.html', {
+            'form': form,
+            'current_step': current_step,
+            'total_steps': total_steps,
+            'provider': provider,
+            'progress_percentage': progress_percentage,
+        })
+    
+    # Step 5: Availability & Emergency
+    if current_step == 5:
+        if request.method == 'POST':
+            form = ProviderAvailabilityForm(request.POST, instance=provider)
+            if form.is_valid():
+                form.save()
+                # Check completion percentage
+                completion = provider.completion_percentage
+                if completion < 50:
+                    messages.warning(
+                        request,
+                        f'Your profile is only {completion}% complete. '
+                        'Please complete at least 50% to submit for review.'
+                    )
+                    return redirect('providers:profile_create?step=5')
+                
+                # Show preview/submit page
+                return redirect('providers:profile_preview')
+        else:
+            form = ProviderAvailabilityForm(instance=provider)
+        
+        progress_percentage = provider.completion_percentage if provider else (current_step / total_steps * 100)
+        return render(request, 'providers/profile/create_step5.html', {
+            'form': form,
+            'current_step': current_step,
+            'total_steps': total_steps,
+            'provider': provider,
+            'completion_percentage': provider.completion_percentage,
+            'progress_percentage': progress_percentage,
+        })
+
+
+@login_required
+def provider_profile_preview(request):
+    """Preview profile before submission."""
+    try:
+        provider = request.user.provider_profile
+    except ServiceProvider.DoesNotExist:
+        messages.error(request, 'No profile found. Please create one first.')
+        return redirect('providers:join_as_pro')
+    
+    if request.method == 'POST' and 'submit_for_review' in request.POST:
+        # Check completion
+        if not provider.can_submit():
+            messages.warning(
+                request,
+                f'Your profile is only {provider.completion_percentage}% complete. '
+                'Please complete at least 50% to submit.'
+            )
+            return redirect('providers:profile_preview')
+        
+        # Activate profile immediately - no approval needed
+        provider.is_draft = False
+        provider.approval_status = 'approved'
+        provider.is_active = True
+        provider.approved_at = timezone.now()
+        provider.submitted_for_review_at = timezone.now()
+        provider.save()
+        
+        # Clear session data
+        if 'draft_provider_id' in request.session:
+            del request.session['draft_provider_id']
+        if 'profile_create_step' in request.session:
+            del request.session['profile_create_step']
+        
+        messages.success(
+            request,
+            f'Congratulations! Your provider profile "{provider.name}" is now live and visible to customers!'
+        )
+        return redirect('providers:profile_status')
+    
+    return render(request, 'providers/profile/preview.html', {
+        'provider': provider,
+        'completion_percentage': provider.completion_percentage,
+    })
+
+
+# Email verification removed - profiles are approved immediately upon submission
+
+
+@login_required
+def provider_profile_status(request):
+    """View provider profile status."""
+    try:
+        provider = request.user.provider_profile
+    except ServiceProvider.DoesNotExist:
+        messages.info(request, 'You do not have a provider profile yet.')
+        return redirect('providers:join_as_pro')
+    
+    return render(request, 'providers/profile/status.html', {
+        'provider': provider,
+        'completion_percentage': provider.completion_percentage,
+    })
+
+
+class ProviderProfileEditView(LoginRequiredMixin, UpdateView):
+    """Edit existing provider profile."""
+    
+    model = ServiceProvider
+    template_name = 'providers/profile/edit.html'
+    fields = [
+        'name', 'category', 'tagline', 'description', 'skills',
+        'email', 'phone', 'website', 'address', 'city', 'state', 'zip_code',
+        'pricing_range', 'years_experience',
+        'logo', 'image',
+        'accepts_emergency', 'emergency_rate_info', 'is_available_now',
+    ]
+    
+    def get_object(self):
+        return get_object_or_404(ServiceProvider, user=self.request.user)
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Profile updated successfully!')
+        return reverse('providers:profile_status')
+    
+    def get_form_class(self):
+        # Return a combined form or use ModelForm
+        from django import forms
+        from django.forms import ModelForm
+        class ProviderEditForm(ModelForm):
+            class Meta:
+                model = ServiceProvider
+                fields = self.fields
+                widgets = {
+                    'name': forms.TextInput(attrs={'class': 'input'}),
+                    'category': forms.Select(attrs={'class': 'input'}),
+                    'tagline': forms.TextInput(attrs={'class': 'input'}),
+                    'description': forms.Textarea(attrs={'class': 'input', 'rows': 5}),
+                    'skills': forms.Textarea(attrs={'class': 'input', 'rows': 3}),
+                    'email': forms.EmailInput(attrs={'class': 'input'}),
+                    'phone': forms.TextInput(attrs={'class': 'input'}),
+                    'website': forms.URLInput(attrs={'class': 'input'}),
+                    'address': forms.TextInput(attrs={'class': 'input'}),
+                    'city': forms.TextInput(attrs={'class': 'input'}),
+                    'state': forms.TextInput(attrs={'class': 'input'}),
+                    'zip_code': forms.TextInput(attrs={'class': 'input'}),
+                    'pricing_range': forms.Select(attrs={'class': 'input'}),
+                    'years_experience': forms.NumberInput(attrs={'class': 'input'}),
+                    'logo': forms.FileInput(attrs={'class': 'input'}),
+                    'image': forms.FileInput(attrs={'class': 'input'}),
+                    'accepts_emergency': forms.CheckboxInput(attrs={'class': 'checkbox'}),
+                    'emergency_rate_info': forms.TextInput(attrs={'class': 'input'}),
+                    'is_available_now': forms.CheckboxInput(attrs={'class': 'checkbox'}),
+                }
+        return ProviderEditForm
 

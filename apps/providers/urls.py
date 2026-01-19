@@ -15,6 +15,13 @@ urlpatterns = [
     path('favorites/', views.FavoriteListView.as_view(), name='favorites'),
     path('favorite/<int:provider_id>/', views.toggle_favorite, name='toggle_favorite'),
     
+    # Provider profile creation and management
+    path('join/', views.JoinAsProView.as_view(), name='join_as_pro'),
+    path('profile/create/', views.provider_profile_create, name='profile_create'),
+    path('profile/preview/', views.provider_profile_preview, name='profile_preview'),
+    path('profile/status/', views.provider_profile_status, name='profile_status'),
+    path('profile/edit/', views.ProviderProfileEditView.as_view(), name='profile_edit'),
+    
     # Quote requests
     path('quotes/', views.MyQuotesView.as_view(), name='my_quotes'),
     path('quotes/received/', views.ProviderQuotesView.as_view(), name='provider_quotes'),

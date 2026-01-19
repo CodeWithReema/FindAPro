@@ -95,6 +95,26 @@ class ServiceProvider(models.Model):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
+    is_draft = models.BooleanField(default=True, help_text='Profile is in draft mode and not visible to public')
+    
+    # Approval & Verification
+    APPROVAL_STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('pending_review', 'Pending Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('suspended', 'Suspended'),
+    ]
+    approval_status = models.CharField(
+        max_length=20,
+        choices=APPROVAL_STATUS_CHOICES,
+        default='draft'
+    )
+    email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=100, blank=True)
+    submitted_for_review_at = models.DateTimeField(null=True, blank=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    rejection_reason = models.TextField(blank=True, help_text='Reason for rejection if applicable')
     
     # Emergency & Availability
     is_available_now = models.BooleanField(default=False, help_text='Currently available for jobs')
@@ -153,6 +173,88 @@ class ServiceProvider(models.Model):
             else:
                 stars.append('empty')
         return stars
+    
+    def calculate_completion_percentage(self):
+        """Calculate profile completion percentage based on filled fields."""
+        total_fields = 0
+        filled_fields = 0
+        
+        # Basic Info (5 fields)
+        fields_to_check = [
+            ('name', self.name),
+            ('category', self.category_id),
+            ('description', self.description),
+            ('skills', self.skills),
+            ('tagline', self.tagline),
+        ]
+        for field_name, field_value in fields_to_check:
+            total_fields += 1
+            if field_value:
+                filled_fields += 1
+        
+        # Contact & Location (7 fields)
+        fields_to_check = [
+            ('email', self.email),
+            ('phone', self.phone),
+            ('website', self.website),
+            ('address', self.address),
+            ('city', self.city),
+            ('state', self.state),
+            ('zip_code', self.zip_code),
+        ]
+        for field_name, field_value in fields_to_check:
+            total_fields += 1
+            if field_value:
+                filled_fields += 1
+        
+        # Business Details (2 fields)
+        total_fields += 1
+        if self.pricing_range:
+            filled_fields += 1
+        total_fields += 1
+        if self.years_experience and self.years_experience > 0:
+            filled_fields += 1
+        
+        # Media (2 fields)
+        total_fields += 1
+        if self.logo:
+            filled_fields += 1
+        total_fields += 1
+        if self.image:
+            filled_fields += 1
+        
+        # Emergency settings (2 fields)
+        total_fields += 1
+        if self.accepts_emergency:
+            filled_fields += 1
+        total_fields += 1
+        if self.emergency_rate_info:
+            filled_fields += 1
+        
+        # Business hours (check if exists)
+        total_fields += 1
+        if hasattr(self, 'business_hours') and self.business_hours:
+            filled_fields += 1
+        
+        # Service areas (check if exists)
+        total_fields += 1
+        if hasattr(self, 'service_areas') and self.service_areas.exists():
+            filled_fields += 1
+        
+        if total_fields == 0:
+            return 0
+        
+        percentage = (filled_fields / total_fields) * 100
+        return round(percentage, 1)
+    
+    @property
+    def completion_percentage(self):
+        """Property to get completion percentage."""
+        return self.calculate_completion_percentage()
+    
+    def can_submit(self):
+        """Check if profile can be submitted (minimum 50% completion)."""
+        return self.completion_percentage >= 50
 
 
 class FavoriteProvider(models.Model):
@@ -304,3 +406,157 @@ class QuoteRequest(models.Model):
     @property
     def has_quote(self):
         return self.status == 'quoted' and self.quote_amount is not None
+
+
+class BusinessHours(models.Model):
+    """Business hours schedule for service providers."""
+    
+    provider = models.OneToOneField(
+        ServiceProvider,
+        on_delete=models.CASCADE,
+        related_name='business_hours'
+    )
+    
+    # Monday
+    monday_open = models.TimeField(null=True, blank=True)
+    monday_close = models.TimeField(null=True, blank=True)
+    monday_closed = models.BooleanField(default=False)
+    
+    # Tuesday
+    tuesday_open = models.TimeField(null=True, blank=True)
+    tuesday_close = models.TimeField(null=True, blank=True)
+    tuesday_closed = models.BooleanField(default=False)
+    
+    # Wednesday
+    wednesday_open = models.TimeField(null=True, blank=True)
+    wednesday_close = models.TimeField(null=True, blank=True)
+    wednesday_closed = models.BooleanField(default=False)
+    
+    # Thursday
+    thursday_open = models.TimeField(null=True, blank=True)
+    thursday_close = models.TimeField(null=True, blank=True)
+    thursday_closed = models.BooleanField(default=False)
+    
+    # Friday
+    friday_open = models.TimeField(null=True, blank=True)
+    friday_close = models.TimeField(null=True, blank=True)
+    friday_closed = models.BooleanField(default=False)
+    
+    # Saturday
+    saturday_open = models.TimeField(null=True, blank=True)
+    saturday_close = models.TimeField(null=True, blank=True)
+    saturday_closed = models.BooleanField(default=False)
+    
+    # Sunday
+    sunday_open = models.TimeField(null=True, blank=True)
+    sunday_close = models.TimeField(null=True, blank=True)
+    sunday_closed = models.BooleanField(default=False)
+    
+    # Notes
+    notes = models.TextField(blank=True, help_text='Additional notes about availability')
+    
+    class Meta:
+        verbose_name = 'Business Hours'
+        verbose_name_plural = 'Business Hours'
+    
+    def __str__(self):
+        return f"Business Hours - {self.provider.name}"
+    
+    def get_day_hours(self, day_name):
+        """Get hours for a specific day."""
+        open_field = f"{day_name.lower()}_open"
+        close_field = f"{day_name.lower()}_close"
+        closed_field = f"{day_name.lower()}_closed"
+        
+        if getattr(self, closed_field):
+            return "Closed"
+        
+        open_time = getattr(self, open_field)
+        close_time = getattr(self, close_field)
+        
+        if open_time and close_time:
+            return f"{open_time.strftime('%I:%M %p')} - {close_time.strftime('%I:%M %p')}"
+        
+        return "Not set"
+
+
+class ServiceArea(models.Model):
+    """Service areas/coverage zones for providers."""
+    
+    provider = models.ForeignKey(
+        ServiceProvider,
+        on_delete=models.CASCADE,
+        related_name='service_areas'
+    )
+    zip_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    radius_miles = models.PositiveIntegerField(
+        default=25,
+        help_text='Service radius in miles from this location'
+    )
+    is_primary = models.BooleanField(
+        default=False,
+        help_text='Primary service location'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Service Area'
+        verbose_name_plural = 'Service Areas'
+        ordering = ['-is_primary', 'city', 'state']
+    
+    def __str__(self):
+        return f"{self.city}, {self.state} {self.zip_code} ({self.radius_miles} miles) - {self.provider.name}"
+    
+    def save(self, *args, **kwargs):
+        # If this is marked as primary, unmark others
+        if self.is_primary:
+            ServiceArea.objects.filter(
+                provider=self.provider,
+                is_primary=True
+            ).exclude(pk=self.pk).update(is_primary=False)
+        super().save(*args, **kwargs)
+
+
+class ProviderCertification(models.Model):
+    """Certifications and licenses for service providers."""
+    
+    provider = models.ForeignKey(
+        ServiceProvider,
+        on_delete=models.CASCADE,
+        related_name='certifications'
+    )
+    name = models.CharField(max_length=200, help_text='e.g., "Licensed Electrician"')
+    issuing_organization = models.CharField(max_length=200, blank=True)
+    license_number = models.CharField(max_length=100, blank=True)
+    issue_date = models.DateField(null=True, blank=True)
+    expiry_date = models.DateField(null=True, blank=True)
+    verification_document = models.FileField(
+        upload_to='certifications/',
+        blank=True,
+        null=True,
+        help_text='Upload verification document'
+    )
+    is_verified = models.BooleanField(
+        default=False,
+        help_text='Admin verified certification'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Provider Certification'
+        verbose_name_plural = 'Provider Certifications'
+        ordering = ['-is_verified', '-issue_date']
+    
+    def __str__(self):
+        return f"{self.name} - {self.provider.name}"
+    
+    @property
+    def is_expired(self):
+        """Check if certification is expired."""
+        if self.expiry_date:
+            from django.utils import timezone
+            return timezone.now().date() > self.expiry_date
+        return False
