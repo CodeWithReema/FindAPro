@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-5xl mx-auto">
+        <div class="mb-6">
+            <a href="{% url 'providers:project_list' %}" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-2 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Projects
+            </a>
+        </div>
+        
+        <!-- Project Header -->
+        <div class="card p-8 mb-6">
+            <div class="flex items-start justify-between mb-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="badge {% if project.project_type == 'community' %}bg-green-100 text-green-700{% elif project.project_type == 'creative' %}bg-purple-100 text-purple-700{% elif project.project_type == 'business' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                            {{ project.get_project_type_display }}
+                        </span>
+                        <span class="badge {% if project.status == 'recruiting' %}bg-yellow-100 text-yellow-700{% elif project.status == 'in_progress' %}bg-blue-100 text-blue-700{% elif project.status == 'completed' %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-700{% endif %}">
+                            {{ project.get_status_display }}
+                        </span>
+                        {% if project.is_featured %}
+                        <span class="badge bg-accent-100 text-accent-700">⭐ Featured</span>
+                        {% endif %}
+                    </div>
+                    <h1 class="text-3xl font-display font-bold text-gray-900 mb-3">{{ project.title }}</h1>
+                    <p class="text-gray-600 text-lg">{{ project.description }}</p>
+                </div>
+                {% if is_creator %}
+                <a href="{% url 'providers:project_manage' pk=project.pk %}" class="btn-primary">Manage Project</a>
+                {% endif %}
+            </div>
+            
+            {% if project.featured_image %}
+            <div class="mb-6 rounded-xl overflow-hidden">
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-auto">
+            </div>
+            {% endif %}
+            
+            <!-- Project Info -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Location</h3>
+                    <p class="text-gray-600">{{ project.location_address }}<br>{{ project.location_city }}, {{ project.location_state }} {{ project.location_zip }}</p>
+                    {% if project.is_remote_friendly %}
+                    <span class="badge bg-green-100 text-green-700 mt-2">🌐 Remote Friendly</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Timeline</h3>
+                    <p class="text-gray-600">{{ project.timeline_description|default:"TBD" }}</p>
+                    {% if project.start_date %}
+                    <p class="text-sm text-gray-500 mt-1">Start: {{ project.start_date|date:"M d, Y" }}</p>
+                    {% endif %}
+                    {% if project.end_date %}
+                    <p class="text-sm text-gray-500">End: {{ project.end_date|date:"M d, Y" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Open Roles -->
+        {% if open_roles %}
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Open Roles</h2>
+            <div class="space-y-4">
+                {% for role in open_roles %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">{{ role.title }}</h3>
+                            {% if role.skill_required %}
+                            <span class="badge bg-blue-100 text-blue-700 text-xs mt-1">{{ role.skill_required.name }}</span>
+                            {% endif %}
+                        </div>
+                        <span class="badge bg-yellow-100 text-yellow-700">{{ role.get_status_display }}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">{{ role.description }}</p>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+                        <div>
+                            <span class="font-semibold">Time:</span> {{ role.time_commitment_description|default:"TBD" }}
+                        </div>
+                        <div>
+                            <span class="font-semibold">Level:</span> {{ role.get_experience_level_display }}
+                        </div>
+                        <div>
+                            <span class="font-semibold">Compensation:</span> {{ role.compensation_description|default:role.get_compensation_type_display }}
+                        </div>
+                    </div>
+                    {% if not is_member %}
+                    <button onclick="showApplicationForm({{ role.pk }})" class="btn-primary text-sm">Apply for This Role</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Application Form (Hidden) -->
+        {% if not is_member and application_form %}
+        <div id="application-form-container" class="card p-6 mb-6 hidden">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Apply for Role</h2>
+            <form method="POST" id="application-form">
+                {% csrf_token %}
+                <input type="hidden" name="role_id" id="role-id-input">
+                {{ application_form.cover_letter }}
+                {{ application_form.relevant_experience }}
+                <div class="flex gap-4 mt-4">
+                    <button type="submit" class="btn-primary">Submit Application</button>
+                    <button type="button" onclick="hideApplicationForm()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+        
+        <!-- Team Members -->
+        {% if project.team_members %}
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Team Members</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                {% for member in project.team_members %}
+                <div class="flex items-center gap-3">
+                    {% if member.user.avatar %}
+                    <img src="{{ member.user.avatar.url }}" alt="{{ member.user.full_name }}" class="w-12 h-12 rounded-full object-cover">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        {{ member.user.first_name|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p class="font-semibold text-gray-900">{{ member.user.full_name }}</p>
+                        <p class="text-sm text-gray-600">
+                            {% if member.role_title %}
+                                {{ member.role_title }}
+                            {% elif member.role %}
+                                {{ member.role.title }}
+                            {% else %}
+                                Team Member
+                            {% endif %}
+                        </p>
+                        {% if member.is_creator %}
+                        <span class="badge bg-purple-100 text-purple-700 text-xs">Creator</span>
+                        {% elif member.is_lead %}
+                        <span class="badge bg-blue-100 text-blue-700 text-xs">Lead</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Project Creator -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Project Creator</h2>
+            <div class="flex items-center gap-4">
+                {% if project.creator.avatar %}
+                <img src="{{ project.creator.avatar.url }}" alt="{{ project.creator.full_name }}" class="w-16 h-16 rounded-full object-cover">
+                {% else %}
+                <div class="w-16 h-16 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-xl">
+                    {{ project.creator.first_name|slice:":1"|upper }}
+                </div>
+                {% endif %}
+                <div>
+                    <p class="font-semibold text-gray-900 text-lg">{{ project.creator.full_name }}</p>
+                    <p class="text-sm text-gray-600">Created {{ project.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showApplicationForm(roleId) {
+    document.getElementById('role-id-input').value = roleId;
+    document.getElementById('application-form-container').classList.remove('hidden');
+    document.getElementById('application-form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideApplicationForm() {
+    document.getElementById('application-form-container').classList.add('hidden');
+}
+</script>
+{% endblock %}

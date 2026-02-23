@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile Modes Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-gray-900 mb-4">Profile Modes Dashboard</h1>
+            <p class="text-gray-600">Manage your different profile modes and switch between them</p>
+        </div>
+        
+        <!-- Mode Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <!-- Service Provider Mode -->
+            <div class="card p-6 {% if has_provider %}border-brand-200{% endif %}">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Service Provider</h3>
+                    {% if has_provider %}
+                    <span class="badge-verified">Active</span>
+                    {% else %}
+                    <span class="badge bg-gray-100 text-gray-600">Not Set Up</span>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    Traditional service provider profile for local services (plumbing, electrical, etc.)
+                </p>
+                <div class="flex gap-2">
+                    {% if has_provider %}
+                    <a href="{% url 'providers:profile_status' %}" class="btn-secondary flex-1">Manage</a>
+                    {% else %}
+                    <a href="{% url 'providers:join_as_pro' %}" class="btn-primary flex-1">Set Up</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Freelance Mode -->
+            <div class="card p-6 {% if has_freelance %}border-brand-200{% endif %}">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Freelance</h3>
+                    {% if user.is_freelancer_active %}
+                    <span class="badge-verified">Active</span>
+                    {% elif has_freelance %}
+                    <span class="badge bg-yellow-100 text-yellow-800">Inactive</span>
+                    {% else %}
+                    <span class="badge bg-gray-100 text-gray-600">Not Set Up</span>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    Project-based work and digital services with portfolio showcase
+                </p>
+                <div class="flex gap-2">
+                    {% if has_freelance %}
+                    <a href="{% url 'accounts:freelance_detail' pk=freelance_listing.pk %}" class="btn-secondary flex-1">View</a>
+                    <a href="{% url 'accounts:freelance_edit' pk=freelance_listing.pk %}" class="btn-secondary">Edit</a>
+                    {% else %}
+                    <a href="{% url 'accounts:freelance_create' %}" class="btn-primary flex-1">Set Up</a>
+                    {% endif %}
+                </div>
+                {% if has_freelance %}
+                <form method="POST" action="{% url 'accounts:toggle_mode' %}" class="mt-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="mode" value="freelance">
+                    <input type="hidden" name="enable" value="{% if user.is_freelancer_active %}false{% else %}true{% endif %}">
+                    <button type="submit" class="btn-secondary w-full text-sm">
+                        {% if user.is_freelancer_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            
+            <!-- Skill Swap Mode -->
+            <div class="card p-6 {% if has_skill_swap %}border-brand-200{% endif %}">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Skill Swap</h3>
+                    {% if user.is_skill_swap_active %}
+                    <span class="badge-verified">Active</span>
+                    {% elif has_skill_swap %}
+                    <span class="badge bg-yellow-100 text-yellow-800">Inactive</span>
+                    {% else %}
+                    <span class="badge bg-gray-100 text-gray-600">Not Set Up</span>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    Barter services with time-banking credits (1 hour = 1 credit)
+                </p>
+                {% if has_skill_swap %}
+                <div class="mb-2 p-2 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-blue-800">
+                        <strong>Credits:</strong> {{ credits_balance|floatformat:1 }} balance
+                    </p>
+                </div>
+                {% endif %}
+                <div class="flex gap-2">
+                    {% if has_skill_swap %}
+                    <a href="{% url 'accounts:skill_swap_detail' pk=skill_swap_listing.pk %}" class="btn-secondary flex-1">View</a>
+                    <a href="{% url 'accounts:skill_swap_edit' pk=skill_swap_listing.pk %}" class="btn-secondary">Edit</a>
+                    {% else %}
+                    <a href="{% url 'accounts:skill_swap_create' %}" class="btn-primary flex-1">Set Up</a>
+                    {% endif %}
+                </div>
+                {% if has_skill_swap %}
+                <form method="POST" action="{% url 'accounts:toggle_mode' %}" class="mt-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="mode" value="skill_swap">
+                    <input type="hidden" name="enable" value="{% if user.is_skill_swap_active %}false{% else %}true{% endif %}">
+                    <button type="submit" class="btn-secondary w-full text-sm">
+                        {% if user.is_skill_swap_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Active Mode Selector -->
+        {% if active_modes|length > 1 %}
+        <div class="card p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Switch Active Mode</h3>
+            <p class="text-sm text-gray-600 mb-4">
+                Choose which mode appears in your navigation and profile context
+            </p>
+            <form method="POST" action="{% url 'accounts:set_active_mode' %}" class="flex gap-4 items-center">
+                {% csrf_token %}
+                <select name="mode" class="input flex-1">
+                    {% if 'provider' in active_modes %}
+                    <option value="provider" {% if active_mode == 'provider' %}selected{% endif %}>Service Provider</option>
+                    {% endif %}
+                    {% if 'freelance' in active_modes %}
+                    <option value="freelance" {% if active_mode == 'freelance' %}selected{% endif %}>Freelance</option>
+                    {% endif %}
+                    {% if 'skill_swap' in active_modes %}
+                    <option value="skill_swap" {% if active_mode == 'skill_swap' %}selected{% endif %}>Skill Swap</option>
+                    {% endif %}
+                </select>
+                <button type="submit" class="btn-primary">Switch Mode</button>
+            </form>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Links -->
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="{% url 'accounts:dashboard' %}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Main Dashboard</span>
+                </a>
+                <a href="{% url 'accounts:freelance_list' %}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Browse Freelancers</span>
+                </a>
+                <a href="{% url 'accounts:skill_swap_list' %}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                    </svg>
+                    <span>Browse Skill Swaps</span>
+                </a>
+                <a href="{% url 'accounts:skill_credits' %}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>My Credits</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

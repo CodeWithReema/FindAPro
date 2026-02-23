@@ -1,0 +1,722 @@
+[
+  {
+    "model": "accounts.skill",
+    "pk": 1,
+    "fields": {
+      "name": "Python Programming",
+      "slug": "python-programming",
+      "category": "Tech & IT",
+      "description": "Python programming and development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 2,
+    "fields": {
+      "name": "JavaScript",
+      "slug": "javascript",
+      "category": "Tech & IT",
+      "description": "JavaScript and frontend development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 3,
+    "fields": {
+      "name": "React",
+      "slug": "react",
+      "category": "Creative & Digital",
+      "description": "React.js frontend framework",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 4,
+    "fields": {
+      "name": "Django",
+      "slug": "django",
+      "category": "Tech & IT",
+      "description": "Django web framework",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 5,
+    "fields": {
+      "name": "Adobe Photoshop",
+      "slug": "adobe-photoshop",
+      "category": "Creative & Digital",
+      "description": "Photo editing and graphic design",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 6,
+    "fields": {
+      "name": "Adobe Illustrator",
+      "slug": "adobe-illustrator",
+      "category": "Creative & Digital",
+      "description": "Vector graphics and illustration",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 7,
+    "fields": {
+      "name": "Figma",
+      "slug": "figma",
+      "category": "Creative & Digital",
+      "description": "UI/UX design tool",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 8,
+    "fields": {
+      "name": "Portrait Photography",
+      "slug": "portrait-photography",
+      "category": "Creative & Digital",
+      "description": "Professional portrait photography",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 9,
+    "fields": {
+      "name": "Event Photography",
+      "slug": "event-photography",
+      "category": "Events & Hospitality",
+      "description": "Event and wedding photography",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 10,
+    "fields": {
+      "name": "Video Production",
+      "slug": "video-production",
+      "category": "Creative & Digital",
+      "description": "Video filming and production",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 11,
+    "fields": {
+      "name": "Premiere Pro",
+      "slug": "premiere-pro",
+      "category": "Creative & Digital",
+      "description": "Adobe Premiere Pro video editing",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 12,
+    "fields": {
+      "name": "Content Writing",
+      "slug": "content-writing",
+      "category": "Creative & Digital",
+      "description": "Blog posts and article writing",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 13,
+    "fields": {
+      "name": "Copywriting",
+      "slug": "copywriting",
+      "category": "Creative & Digital",
+      "description": "Marketing and advertising copy",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 14,
+    "fields": {
+      "name": "Social Media Marketing",
+      "slug": "social-media-marketing",
+      "category": "Creative & Digital",
+      "description": "Social media strategy and management",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 15,
+    "fields": {
+      "name": "SEO",
+      "slug": "seo",
+      "category": "Creative & Digital",
+      "description": "Search engine optimization",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 16,
+    "fields": {
+      "name": "Plumbing Repair",
+      "slug": "plumbing-repair",
+      "category": "Blue Collar Trades",
+      "description": "Residential and commercial plumbing",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 17,
+    "fields": {
+      "name": "Electrical Wiring",
+      "slug": "electrical-wiring",
+      "category": "Blue Collar Trades",
+      "description": "Electrical installation and repair",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 18,
+    "fields": {
+      "name": "HVAC Installation",
+      "slug": "hvac-installation",
+      "category": "Blue Collar Trades",
+      "description": "HVAC system installation and repair",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 19,
+    "fields": {
+      "name": "Carpentry",
+      "slug": "carpentry",
+      "category": "Blue Collar Trades",
+      "description": "Woodworking and carpentry",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 20,
+    "fields": {
+      "name": "Auto Repair",
+      "slug": "auto-repair",
+      "category": "Blue Collar Trades",
+      "description": "Automotive repair and maintenance",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 21,
+    "fields": {
+      "name": "House Cleaning",
+      "slug": "house-cleaning",
+      "category": "Blue Collar Trades",
+      "description": "Residential cleaning services",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 22,
+    "fields": {
+      "name": "Landscape Design",
+      "slug": "landscape-design",
+      "category": "Blue Collar Trades",
+      "description": "Landscape design and installation",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 23,
+    "fields": {
+      "name": "Interior Painting",
+      "slug": "interior-painting",
+      "category": "Blue Collar Trades",
+      "description": "Interior painting services",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 24,
+    "fields": {
+      "name": "Roof Repair",
+      "slug": "roof-repair",
+      "category": "Blue Collar Trades",
+      "description": "Roofing repair and installation",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 25,
+    "fields": {
+      "name": "General Handyman",
+      "slug": "general-handyman",
+      "category": "Blue Collar Trades",
+      "description": "General repair and maintenance",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 26,
+    "fields": {
+      "name": "Logo Design",
+      "slug": "logo-design",
+      "category": "Creative & Digital",
+      "description": "Brand logo design",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 27,
+    "fields": {
+      "name": "Web Design",
+      "slug": "web-design",
+      "category": "Creative & Digital",
+      "description": "Website design and layout",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 28,
+    "fields": {
+      "name": "WordPress",
+      "slug": "wordpress",
+      "category": "Tech & IT",
+      "description": "WordPress development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 29,
+    "fields": {
+      "name": "E-commerce Development",
+      "slug": "ecommerce-development",
+      "category": "Tech & IT",
+      "description": "Online store development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 30,
+    "fields": {
+      "name": "Accounting",
+      "slug": "accounting",
+      "category": "Professional Services",
+      "description": "Accounting and bookkeeping",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 31,
+    "fields": {
+      "name": "Tax Preparation",
+      "slug": "tax-preparation",
+      "category": "Professional Services",
+      "description": "Tax filing and preparation",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 32,
+    "fields": {
+      "name": "Business Consulting",
+      "slug": "business-consulting",
+      "category": "Professional Services",
+      "description": "Business strategy consulting",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 33,
+    "fields": {
+      "name": "Legal Research",
+      "slug": "legal-research",
+      "category": "Professional Services",
+      "description": "Legal research and writing",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 34,
+    "fields": {
+      "name": "HR Consulting",
+      "slug": "hr-consulting",
+      "category": "Professional Services",
+      "description": "Human resources consulting",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 35,
+    "fields": {
+      "name": "Resume Writing",
+      "slug": "resume-writing",
+      "category": "Professional Services",
+      "description": "Resume and cover letter writing",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 36,
+    "fields": {
+      "name": "Financial Planning",
+      "slug": "financial-planning",
+      "category": "Professional Services",
+      "description": "Personal financial planning",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 37,
+    "fields": {
+      "name": "Virtual Assistant",
+      "slug": "virtual-assistant",
+      "category": "Professional Services",
+      "description": "Administrative assistance",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 38,
+    "fields": {
+      "name": "Spanish Translation",
+      "slug": "spanish-translation",
+      "category": "Professional Services",
+      "description": "Spanish-English translation",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 39,
+    "fields": {
+      "name": "Personal Training",
+      "slug": "personal-training",
+      "category": "Wellness & Personal",
+      "description": "Fitness training and coaching",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 40,
+    "fields": {
+      "name": "Yoga Instruction",
+      "slug": "yoga-instruction",
+      "category": "Wellness & Personal",
+      "description": "Yoga classes and instruction",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 41,
+    "fields": {
+      "name": "Nutrition Planning",
+      "slug": "nutrition-planning",
+      "category": "Wellness & Personal",
+      "description": "Meal planning and nutrition coaching",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 42,
+    "fields": {
+      "name": "Therapeutic Massage",
+      "slug": "therapeutic-massage",
+      "category": "Wellness & Personal",
+      "description": "Massage therapy",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 43,
+    "fields": {
+      "name": "Life Coaching",
+      "slug": "life-coaching",
+      "category": "Wellness & Personal",
+      "description": "Personal development coaching",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 44,
+    "fields": {
+      "name": "Pet Sitting",
+      "slug": "pet-sitting",
+      "category": "Wellness & Personal",
+      "description": "Pet care and sitting",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 45,
+    "fields": {
+      "name": "Math Tutoring",
+      "slug": "math-tutoring",
+      "category": "Wellness & Personal",
+      "description": "Mathematics tutoring",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 46,
+    "fields": {
+      "name": "Guitar Lessons",
+      "slug": "guitar-lessons",
+      "category": "Wellness & Personal",
+      "description": "Guitar instruction",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 47,
+    "fields": {
+      "name": "Event Planning",
+      "slug": "event-planning",
+      "category": "Events & Hospitality",
+      "description": "Event coordination and planning",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 48,
+    "fields": {
+      "name": "Catering",
+      "slug": "catering",
+      "category": "Events & Hospitality",
+      "description": "Food catering services",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 49,
+    "fields": {
+      "name": "DJ Services",
+      "slug": "dj-services",
+      "category": "Events & Hospitality",
+      "description": "DJ and music services",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 50,
+    "fields": {
+      "name": "Bartending",
+      "slug": "bartending",
+      "category": "Events & Hospitality",
+      "description": "Professional bartending",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 51,
+    "fields": {
+      "name": "Floral Arrangements",
+      "slug": "floral-arrangements",
+      "category": "Events & Hospitality",
+      "description": "Floral design and arrangements",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 52,
+    "fields": {
+      "name": "IT Troubleshooting",
+      "slug": "it-troubleshooting",
+      "category": "Tech & IT",
+      "description": "Computer and IT troubleshooting",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 53,
+    "fields": {
+      "name": "Network Administration",
+      "slug": "network-administration",
+      "category": "Tech & IT",
+      "description": "Network setup and management",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 54,
+    "fields": {
+      "name": "Cybersecurity",
+      "slug": "cybersecurity",
+      "category": "Tech & IT",
+      "description": "Security assessment and protection",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 55,
+    "fields": {
+      "name": "Mobile App Development",
+      "slug": "mobile-app-development",
+      "category": "Tech & IT",
+      "description": "iOS and Android app development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 56,
+    "fields": {
+      "name": "Project Management",
+      "slug": "project-management",
+      "category": "Professional Services",
+      "description": "Project planning and coordination",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 57,
+    "fields": {
+      "name": "Communication",
+      "slug": "communication",
+      "category": "Professional Services",
+      "description": "Effective communication skills",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 58,
+    "fields": {
+      "name": "Public Speaking",
+      "slug": "public-speaking",
+      "category": "Professional Services",
+      "description": "Public speaking and presentation",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 59,
+    "fields": {
+      "name": "Data Analysis",
+      "slug": "data-analysis",
+      "category": "Tech & IT",
+      "description": "Data analysis and visualization",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 60,
+    "fields": {
+      "name": "Machine Learning",
+      "slug": "machine-learning",
+      "category": "Tech & IT",
+      "description": "ML and AI development",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  }
+]

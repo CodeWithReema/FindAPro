@@ -29,8 +29,9 @@ class HomeView(TemplateView):
             is_active=True,
             is_featured=True
         ).select_related('category').annotate(
-            avg_rating=Avg('reviews__rating')
-        )[:6]
+            avg_rating=Avg('reviews__rating'),
+            num_reviews=Count('reviews')
+        ).order_by('-avg_rating', '-num_reviews')[:6]
         
         # Get top rated providers
         context['top_providers'] = ServiceProvider.objects.filter(

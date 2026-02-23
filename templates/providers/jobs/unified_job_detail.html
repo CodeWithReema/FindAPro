@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-6">
+            <a href="{% url 'providers:unified_job_dashboard' %}" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-2 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+        
+        <!-- Job Header -->
+        <div class="card p-8 mb-6">
+            <div class="flex items-start justify-between mb-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <h1 class="text-3xl font-display font-bold text-gray-900">{{ job.title }}</h1>
+                        <span class="badge {% if job.payment_type == 'paid' %}bg-blue-100 text-blue-700{% elif job.payment_type == 'credit' %}bg-green-100 text-green-700{% else %}bg-purple-100 text-purple-700{% endif %}">
+                            {{ job.get_payment_type_display }}
+                        </span>
+                        <span class="badge {% if job.status == 'completed' %}bg-green-100 text-green-700{% elif job.status == 'in_progress' %}bg-blue-100 text-blue-700{% elif job.status == 'pending' %}bg-yellow-100 text-yellow-700{% else %}bg-gray-100 text-gray-700{% endif %}">
+                            {{ job.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-gray-600">{{ job.description }}</p>
+                </div>
+            </div>
+            
+            <!-- Payment Type Specific Info -->
+            {% if job.payment_type == 'paid' %}
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 class="font-semibold text-blue-900 mb-2">Payment Details</h3>
+                {% if job.agreed_amount %}
+                <p class="text-lg font-bold text-blue-700">Agreed Amount: ${{ job.agreed_amount|floatformat:2 }}</p>
+                {% else %}
+                <p class="text-sm text-blue-700">
+                    Budget: {% if job.budget_min %}${{ job.budget_min|floatformat:2 }}{% endif %}
+                    {% if job.budget_max %} - ${{ job.budget_max|floatformat:2 }}{% endif %}
+                </p>
+                {% endif %}
+            </div>
+            {% elif job.payment_type == 'credit' %}
+            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h3 class="font-semibold text-green-900 mb-2">Credit Details</h3>
+                {% if job.credits_agreed %}
+                <p class="text-lg font-bold text-green-700">Agreed Credits: {{ job.credits_agreed|floatformat:2 }} credits</p>
+                {% else %}
+                <p class="text-sm text-green-700">Requested: {{ job.credits_requested|floatformat:2 }} credits</p>
+                {% endif %}
+                {% if job.credits_in_escrow > 0 %}
+                <p class="text-xs text-yellow-700 mt-1">💰 {{ job.credits_in_escrow|floatformat:2 }} credits in escrow</p>
+                {% endif %}
+            </div>
+            {% elif job.payment_type == 'barter' %}
+            <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                <h3 class="font-semibold text-purple-900 mb-2">Barter Proposal</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-semibold text-purple-700 mb-1">You Offer:</p>
+                        <p class="text-sm text-gray-700">{{ job.barter_offer|default:job.barter_request }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-purple-700 mb-1">You Want:</p>
+                        <p class="text-sm text-gray-700">{{ job.barter_request|default:job.barter_offer }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Participants -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="card p-6">
+                <h3 class="font-semibold text-gray-900 mb-3">Requester</h3>
+                <div class="flex items-center gap-3">
+                    {% if job.requester.avatar %}
+                    <img src="{{ job.requester.avatar.url }}" alt="{{ job.requester.full_name }}" class="w-12 h-12 rounded-full object-cover">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        {{ job.requester.first_name|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p class="font-semibold text-gray-900">{{ job.requester.full_name }}</p>
+                        <p class="text-sm text-gray-600">{{ job.requester.email }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if job.provider %}
+            <div class="card p-6">
+                <h3 class="font-semibold text-gray-900 mb-3">Provider</h3>
+                <div class="flex items-center gap-3">
+                    {% if job.provider.avatar %}
+                    <img src="{{ job.provider.avatar.url }}" alt="{{ job.provider.full_name }}" class="w-12 h-12 rounded-full object-cover">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        {{ job.provider.first_name|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p class="font-semibold text-gray-900">{{ job.provider.full_name }}</p>
+                        <p class="text-sm text-gray-600">{{ job.provider.email }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Proposals -->
+        {% if proposals %}
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Proposals & Negotiations</h2>
+            <div class="space-y-4">
+                {% for proposal in proposals %}
+                <div class="p-4 bg-gray-50 rounded-lg {% if proposal.status == 'accepted' %}border-2 border-green-200{% endif %}">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <span class="badge {% if proposal.proposal_type == 'initial' %}bg-blue-100 text-blue-700{% elif proposal.proposal_type == 'counter' %}bg-yellow-100 text-yellow-700{% elif proposal.status == 'accepted' %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                {{ proposal.get_proposal_type_display }}
+                            </span>
+                            <span class="text-sm text-gray-600 ml-2">by {{ proposal.proposed_by.full_name }}</span>
+                        </div>
+                        <span class="text-xs text-gray-500">{{ proposal.created_at|date:"M d, Y g:i A" }}</span>
+                    </div>
+                    <p class="text-gray-700 mb-3">{{ proposal.message }}</p>
+                    
+                    <!-- Proposal Terms -->
+                    {% if job.payment_type == 'paid' and proposal.proposed_amount %}
+                    <p class="text-sm font-semibold text-gray-900">Proposed: ${{ proposal.proposed_amount|floatformat:2 }}</p>
+                    {% elif job.payment_type == 'credit' and proposal.proposed_credits %}
+                    <p class="text-sm font-semibold text-gray-900">Proposed: {{ proposal.proposed_credits|floatformat:2 }} credits</p>
+                    {% elif job.payment_type == 'barter' %}
+                    <div class="text-sm">
+                        <p class="font-semibold text-gray-900">Offer: {{ proposal.proposed_barter_offer }}</p>
+                        <p class="font-semibold text-gray-900">Request: {{ proposal.proposed_barter_request }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Actions for Requester -->
+                    {% if is_requester and proposal.status == 'pending' %}
+                    <div class="flex gap-2 mt-3">
+                        <form method="POST" action="{% url 'providers:respond_to_proposal' proposal_id=proposal.pk action='accept' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary text-sm">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'providers:respond_to_proposal' proposal_id=proposal.pk action='decline' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-secondary text-sm">Decline</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Provider Proposal Form -->
+        {% if is_provider and job.status == 'pending' %}
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Submit Proposal</h2>
+            <form method="POST" action="{% url 'providers:submit_job_proposal' job_id=job.pk %}">
+                {% csrf_token %}
+                {{ proposal_form.message }}
+                {% if job.payment_type == 'paid' %}
+                <div class="mt-4">
+                    <label for="{{ proposal_form.proposed_amount.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Proposed Amount ($)
+                    </label>
+                    {{ proposal_form.proposed_amount }}
+                </div>
+                {% elif job.payment_type == 'credit' %}
+                <div class="mt-4">
+                    <label for="{{ proposal_form.proposed_credits.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Proposed Credits (hours)
+                    </label>
+                    {{ proposal_form.proposed_credits }}
+                </div>
+                {% elif job.payment_type == 'barter' %}
+                <div class="grid md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label for="{{ proposal_form.proposed_barter_offer.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            What You Offer
+                        </label>
+                        {{ proposal_form.proposed_barter_offer }}
+                    </div>
+                    <div>
+                        <label for="{{ proposal_form.proposed_barter_request.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            What You Want
+                        </label>
+                        {{ proposal_form.proposed_barter_request }}
+                    </div>
+                </div>
+                {% endif %}
+                <button type="submit" class="btn-primary mt-4">Submit Proposal</button>
+            </form>
+        </div>
+        {% endif %}
+        
+        <!-- Messages Thread -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Messages</h2>
+            <div class="space-y-4 mb-4 max-h-96 overflow-y-auto">
+                {% for message in messages %}
+                <div class="flex gap-3 {% if message.sender == user %}flex-row-reverse{% endif %}">
+                    <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
+                        {{ message.sender.first_name|slice:":1"|upper }}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-semibold text-gray-900">{{ message.sender.full_name }}</span>
+                            <span class="text-xs text-gray-500">{{ message.created_at|date:"M d, g:i A" }}</span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-gray-700">{{ message.message }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center py-4">No messages yet</p>
+                {% endfor %}
+            </div>
+            
+            <!-- Send Message Form -->
+            <form method="POST" action="{% url 'providers:send_job_message' job_id=job.pk %}">
+                {% csrf_token %}
+                {{ message_form.message }}
+                <button type="submit" class="btn-primary mt-3">Send Message</button>
+            </form>
+        </div>
+        
+        <!-- Completion Confirmation -->
+        {% if can_confirm %}
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Confirm Completion</h2>
+            <div class="mb-4">
+                <div class="flex items-center gap-2 mb-2">
+                    {% if job.requester_confirmed %}
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% endif %}
+                    <span class="text-sm {% if job.requester_confirmed %}text-green-600 font-semibold{% else %}text-gray-600{% endif %}">
+                        Requester confirmed
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    {% if job.provider_confirmed %}
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% endif %}
+                    <span class="text-sm {% if job.provider_confirmed %}text-green-600 font-semibold{% else %}text-gray-600{% endif %}">
+                        Provider confirmed
+                    </span>
+                </div>
+            </div>
+            
+            {% if not job.requester_confirmed or not job.provider_confirmed %}
+            <form method="POST" action="{% url 'providers:confirm_unified_job_completion' job_id=job.pk %}">
+                {% csrf_token %}
+                <p class="text-sm text-gray-600 mb-4">
+                    Confirm that the job has been completed to your satisfaction. Once both parties confirm, payment/credits will be processed.
+                </p>
+                <button type="submit" class="btn-primary">Confirm Completion</button>
+            </form>
+            {% else %}
+            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p class="text-sm text-green-800">
+                    ✓ Both parties have confirmed. Payment/credits will be processed automatically.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

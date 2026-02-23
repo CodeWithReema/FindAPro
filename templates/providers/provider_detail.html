@@ -37,6 +37,15 @@
                         {% if provider.is_featured %}
                         <span class="badge bg-accent-100 text-accent-700">⭐ Featured</span>
                         {% endif %}
+                        {% if provider.accepts_credit_jobs %}
+                        <span class="badge bg-green-100 text-green-700">🔄 Accepts Credits</span>
+                        {% endif %}
+                        {% if provider.accepts_barter %}
+                        <span class="badge bg-purple-100 text-purple-700">🤝 Open to Barter</span>
+                        {% endif %}
+                        {% if not provider.accepts_credit_jobs and not provider.accepts_barter %}
+                        <span class="badge bg-blue-100 text-blue-700">💰 Paid Only</span>
+                        {% endif %}
                     </div>
                     
                     <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900">{{ provider.name }}</h1>
@@ -93,20 +102,24 @@
                     
                     <!-- Action Buttons -->
                     <div class="flex flex-wrap gap-4 mt-8">
-                        <!-- Primary: Request Quote -->
+                        <!-- Primary: Request Job (Unified) -->
                         {% if user.is_authenticated %}
-                        <a href="{% url 'providers:request_quote' slug=provider.slug %}" class="btn-primary">
+                        <a href="{% url 'providers:unified_job_create_provider' slug=provider.slug %}" class="btn-primary">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
-                            Request Quote
+                            Request Job
+                        </a>
+                        <!-- Legacy Quote Request -->
+                        <a href="{% url 'providers:request_quote' slug=provider.slug %}" class="btn-secondary text-sm">
+                            Legacy Quote
                         </a>
                         {% else %}
-                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn-primary">
+                        <a href="{% url 'accounts:login' %}?next={% url 'providers:unified_job_create_provider' slug=provider.slug %}" class="btn-primary">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
-                            Request Quote
+                            Request Job
                         </a>
                         {% endif %}
                         

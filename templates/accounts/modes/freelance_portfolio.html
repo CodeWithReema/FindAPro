@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Portfolio{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">Manage Portfolio</h1>
+            <p class="text-gray-600">Add images, links, and case studies to showcase your work</p>
+        </div>
+        
+        <div class="card p-8 md:p-10">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                
+                <div id="portfolio-items" class="space-y-6">
+                    {% for form in formset %}
+                    <div class="border border-gray-200 rounded-lg p-6">
+                        {{ form.id }}
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                {{ form.item_type }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Order</label>
+                                {{ form.order }}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="mt-4 grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                                {{ form.image }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">URL</label>
+                                {{ form.url }}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Case Study Content</label>
+                            {{ form.case_study_content }}
+                        </div>
+                        <div class="mt-4 flex items-center gap-4">
+                            <label class="flex items-center gap-2">
+                                {{ form.is_featured }}
+                                <span class="text-sm text-gray-700">Featured</span>
+                            </label>
+                            {% if form.DELETE %}
+                            <label class="flex items-center gap-2">
+                                {{ form.DELETE }}
+                                <span class="text-sm text-red-600">Delete</span>
+                            </label>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-6">
+                    <a href="{% url 'accounts:freelance_detail' pk=listing.pk %}" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Save Portfolio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

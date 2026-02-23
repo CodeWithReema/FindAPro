@@ -18,6 +18,7 @@ whitenoise==6.6.0
 
 # Development
 django-debug-toolbar==4.2.0
+Faker==24.0.0
 
 # Production server
 gunicorn==21.2.0

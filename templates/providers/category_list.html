@@ -22,7 +22,7 @@
             <a href="{% url 'providers:category_detail' slug=category.slug %}" class="card group p-6 hover:border-brand-200">
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center mb-4 group-hover:from-brand-100 group-hover:to-brand-200 transition-all">
                     {% if category.icon %}
-                    <span class="text-3xl">{{ category.icon }}</span>
+                    <i class="fas {{ category.icon }} text-2xl text-brand-600"></i>
                     {% else %}
                     <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>

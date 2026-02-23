@@ -1,0 +1,662 @@
+[
+  {
+    "model": "providers.servicecategory",
+    "pk": 1,
+    "fields": {
+      "name": "Plumbing",
+      "slug": "plumbing",
+      "description": "Plumbing services and repairs",
+      "icon": "fa-faucet",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 2,
+    "fields": {
+      "name": "Electrical",
+      "slug": "electrical",
+      "description": "Electrical work and repairs",
+      "icon": "fa-bolt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 3,
+    "fields": {
+      "name": "HVAC",
+      "slug": "hvac",
+      "description": "Heating, ventilation, and air conditioning",
+      "icon": "fa-wind",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 4,
+    "fields": {
+      "name": "Carpentry",
+      "slug": "carpentry",
+      "description": "Woodworking and carpentry services",
+      "icon": "fa-hammer",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 5,
+    "fields": {
+      "name": "Auto Repair",
+      "slug": "auto-repair",
+      "description": "Automotive repair and maintenance",
+      "icon": "fa-car",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 6,
+    "fields": {
+      "name": "Cleaning",
+      "slug": "cleaning",
+      "description": "Residential and commercial cleaning",
+      "icon": "fa-broom",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 7,
+    "fields": {
+      "name": "Landscaping",
+      "slug": "landscaping",
+      "description": "Landscape design and maintenance",
+      "icon": "fa-leaf",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 8,
+    "fields": {
+      "name": "Painting",
+      "slug": "painting",
+      "description": "Interior and exterior painting",
+      "icon": "fa-paint-brush",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 9,
+    "fields": {
+      "name": "Roofing",
+      "slug": "roofing",
+      "description": "Roof repair and installation",
+      "icon": "fa-home",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 10,
+    "fields": {
+      "name": "Handyman",
+      "slug": "handyman",
+      "description": "General handyman services",
+      "icon": "fa-tools",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 11,
+    "fields": {
+      "name": "Graphic Design",
+      "slug": "graphic-design",
+      "description": "Logo design, branding, and visual design",
+      "icon": "fa-palette",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 12,
+    "fields": {
+      "name": "Web Development",
+      "slug": "web-development",
+      "description": "Website design and development",
+      "icon": "fa-code",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 13,
+    "fields": {
+      "name": "Photography",
+      "slug": "photography",
+      "description": "Professional photography services",
+      "icon": "fa-camera",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 14,
+    "fields": {
+      "name": "Videography",
+      "slug": "videography",
+      "description": "Video production and editing",
+      "icon": "fa-video",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 15,
+    "fields": {
+      "name": "Content Writing",
+      "slug": "content-writing",
+      "description": "Blog posts, articles, and content creation",
+      "icon": "fa-pen",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 16,
+    "fields": {
+      "name": "Copywriting",
+      "slug": "copywriting",
+      "description": "Marketing copy and advertising",
+      "icon": "fa-file-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 17,
+    "fields": {
+      "name": "Social Media Management",
+      "slug": "social-media",
+      "description": "Social media strategy and management",
+      "icon": "fa-share-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 18,
+    "fields": {
+      "name": "SEO & Marketing",
+      "slug": "seo-marketing",
+      "description": "Search engine optimization and digital marketing",
+      "icon": "fa-chart-line",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 19,
+    "fields": {
+      "name": "UI/UX Design",
+      "slug": "ui-ux-design",
+      "description": "User interface and experience design",
+      "icon": "fa-mobile-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 20,
+    "fields": {
+      "name": "Animation",
+      "slug": "animation",
+      "description": "2D and 3D animation services",
+      "icon": "fa-film",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 21,
+    "fields": {
+      "name": "Video Editing",
+      "slug": "video-editing",
+      "description": "Professional video editing and post-production",
+      "icon": "fa-cut",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 22,
+    "fields": {
+      "name": "Illustration",
+      "slug": "illustration",
+      "description": "Digital and traditional illustration",
+      "icon": "fa-paint-brush",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 23,
+    "fields": {
+      "name": "Accounting",
+      "slug": "accounting",
+      "description": "Accounting and bookkeeping services",
+      "icon": "fa-calculator",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 24,
+    "fields": {
+      "name": "Legal Consulting",
+      "slug": "legal-consulting",
+      "description": "Legal advice and consulting",
+      "icon": "fa-gavel",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 25,
+    "fields": {
+      "name": "Business Consulting",
+      "slug": "business-consulting",
+      "description": "Business strategy and consulting",
+      "icon": "fa-briefcase",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 26,
+    "fields": {
+      "name": "HR Services",
+      "slug": "hr-services",
+      "description": "Human resources and recruitment",
+      "icon": "fa-users",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 27,
+    "fields": {
+      "name": "Career Coaching",
+      "slug": "career-coaching",
+      "description": "Career development and coaching",
+      "icon": "fa-user-tie",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 28,
+    "fields": {
+      "name": "Financial Planning",
+      "slug": "financial-planning",
+      "description": "Financial planning and investment advice",
+      "icon": "fa-chart-pie",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 29,
+    "fields": {
+      "name": "Tax Preparation",
+      "slug": "tax-preparation",
+      "description": "Tax preparation and filing",
+      "icon": "fa-file-invoice-dollar",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 30,
+    "fields": {
+      "name": "Virtual Assistant",
+      "slug": "virtual-assistant",
+      "description": "Administrative and virtual assistance",
+      "icon": "fa-headset",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 31,
+    "fields": {
+      "name": "Translation",
+      "slug": "translation",
+      "description": "Translation and interpretation services",
+      "icon": "fa-language",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 32,
+    "fields": {
+      "name": "Personal Training",
+      "slug": "personal-training",
+      "description": "Fitness training and coaching",
+      "icon": "fa-dumbbell",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 33,
+    "fields": {
+      "name": "Yoga Instruction",
+      "slug": "yoga-instruction",
+      "description": "Yoga classes and instruction",
+      "icon": "fa-spa",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 34,
+    "fields": {
+      "name": "Nutrition Coaching",
+      "slug": "nutrition-coaching",
+      "description": "Nutrition planning and coaching",
+      "icon": "fa-apple-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 35,
+    "fields": {
+      "name": "Massage Therapy",
+      "slug": "massage-therapy",
+      "description": "Therapeutic massage services",
+      "icon": "fa-hand-paper",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 36,
+    "fields": {
+      "name": "Life Coaching",
+      "slug": "life-coaching",
+      "description": "Personal development and life coaching",
+      "icon": "fa-lightbulb",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 37,
+    "fields": {
+      "name": "Mental Health Counseling",
+      "slug": "mental-health",
+      "description": "Mental health and therapy services",
+      "icon": "fa-heart",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 38,
+    "fields": {
+      "name": "Pet Care",
+      "slug": "pet-care",
+      "description": "Pet sitting, walking, and grooming",
+      "icon": "fa-paw",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 39,
+    "fields": {
+      "name": "Tutoring",
+      "slug": "tutoring",
+      "description": "Academic tutoring and test prep",
+      "icon": "fa-book",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 40,
+    "fields": {
+      "name": "Music Lessons",
+      "slug": "music-lessons",
+      "description": "Music instruction and lessons",
+      "icon": "fa-music",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 41,
+    "fields": {
+      "name": "Event Planning",
+      "slug": "event-planning",
+      "description": "Event planning and coordination",
+      "icon": "fa-calendar-check",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 42,
+    "fields": {
+      "name": "Catering",
+      "slug": "catering",
+      "description": "Catering and food services",
+      "icon": "fa-utensils",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 43,
+    "fields": {
+      "name": "DJ Services",
+      "slug": "dj-services",
+      "description": "DJ and music services for events",
+      "icon": "fa-compact-disc",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 44,
+    "fields": {
+      "name": "Bartending",
+      "slug": "bartending",
+      "description": "Bartending services for events",
+      "icon": "fa-cocktail",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 45,
+    "fields": {
+      "name": "Floral Design",
+      "slug": "floral-design",
+      "description": "Floral arrangements and design",
+      "icon": "fa-seedling",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 46,
+    "fields": {
+      "name": "Party Entertainment",
+      "slug": "party-entertainment",
+      "description": "Entertainment for parties and events",
+      "icon": "fa-birthday-cake",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 47,
+    "fields": {
+      "name": "Wedding Planning",
+      "slug": "wedding-planning",
+      "description": "Wedding planning and coordination",
+      "icon": "fa-ring",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 48,
+    "fields": {
+      "name": "IT Support",
+      "slug": "it-support",
+      "description": "IT support and troubleshooting",
+      "icon": "fa-laptop",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 49,
+    "fields": {
+      "name": "Computer Repair",
+      "slug": "computer-repair",
+      "description": "Computer and laptop repair",
+      "icon": "fa-desktop",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 50,
+    "fields": {
+      "name": "Network Setup",
+      "slug": "network-setup",
+      "description": "Network installation and configuration",
+      "icon": "fa-network-wired",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 51,
+    "fields": {
+      "name": "Cybersecurity",
+      "slug": "cybersecurity",
+      "description": "Cybersecurity and data protection",
+      "icon": "fa-shield-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 52,
+    "fields": {
+      "name": "App Development",
+      "slug": "app-development",
+      "description": "Mobile and web app development",
+      "icon": "fa-mobile-alt",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 53,
+    "fields": {
+      "name": "Database Management",
+      "slug": "database-management",
+      "description": "Database design and management",
+      "icon": "fa-database",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 54,
+    "fields": {
+      "name": "Cloud Services",
+      "slug": "cloud-services",
+      "description": "Cloud infrastructure and services",
+      "icon": "fa-cloud",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "providers.servicecategory",
+    "pk": 55,
+    "fields": {
+      "name": "Tech Training",
+      "slug": "tech-training",
+      "description": "Technology training and workshops",
+      "icon": "fa-chalkboard-teacher",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  }
+]

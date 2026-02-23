@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Job Completion{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-2xl mx-auto">
+        <div class="card p-8">
+            <h1 class="text-2xl font-display font-bold text-gray-900 mb-6">Confirm Job Completion</h1>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h2 class="font-semibold text-gray-900 mb-2">{{ job.title }}</h2>
+                <p class="text-sm text-gray-600 mb-4">{{ job.description }}</p>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Credits in escrow:</span>
+                    <span class="font-semibold">{{ job.credits_required }} credits</span>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="font-semibold text-gray-900 mb-3">Completion Status</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        {% if job.requester_confirmed %}
+                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        {% else %}
+                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                        </svg>
+                        {% endif %}
+                        <span class="text-sm {% if job.requester_confirmed %}text-green-600 font-semibold{% else %}text-gray-600{% endif %}">
+                            Requester confirmed
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        {% if job.provider_confirmed %}
+                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        {% else %}
+                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                        </svg>
+                        {% endif %}
+                        <span class="text-sm {% if job.provider_confirmed %}text-green-600 font-semibold{% else %}text-gray-600{% endif %}">
+                            Provider confirmed
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if job.requester_confirmed and job.provider_confirmed %}
+            <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p class="text-sm text-green-800">
+                    ✓ Both parties have confirmed completion. Credits will be transferred automatically.
+                </p>
+            </div>
+            {% elif is_requester and not job.requester_confirmed %}
+            <form method="POST" class="mb-6">
+                {% csrf_token %}
+                <p class="text-sm text-gray-600 mb-4">
+                    Confirm that the service has been completed to your satisfaction. Once both parties confirm, credits will be automatically transferred.
+                </p>
+                <button type="submit" class="btn-primary">Confirm Completion</button>
+            </form>
+            {% elif not is_requester and not job.provider_confirmed %}
+            <form method="POST" class="mb-6">
+                {% csrf_token %}
+                <p class="text-sm text-gray-600 mb-4">
+                    Confirm that you have completed the service. Once both parties confirm, credits will be automatically transferred.
+                </p>
+                <button type="submit" class="btn-primary">Confirm Completion</button>
+            </form>
+            {% else %}
+            <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p class="text-sm text-yellow-800">
+                    Waiting for the other party to confirm completion.
+                </p>
+            </div>
+            {% endif %}
+            
+            <a href="{% url 'accounts:credit_dashboard' %}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -115,7 +115,7 @@
                     {% for category in categories %}
                     <label class="quiz-option card p-6 text-center hover:shadow-lg">
                         <input type="radio" name="category" value="{{ category.id }}" required>
-                        <div class="category-icon">{{ category.icon }}</div>
+                        <div class="category-icon"><i class="fas {{ category.icon }}"></i></div>
                         <span class="font-semibold text-gray-900">{{ category.name }}</span>
                     </label>
                     {% endfor %}
