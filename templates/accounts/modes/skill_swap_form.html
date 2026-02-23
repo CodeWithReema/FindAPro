@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Edit{% else %}Create{% endif %} Skill Swap Listing{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">
+                {% if object %}Edit{% else %}Create{% endif %} Skill Swap Listing
+            </h1>
+            <p class="text-gray-600">Set up your skill swap profile for bartering services</p>
+        </div>
+        
+        <div class="card p-8 md:p-10">
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="p-4 rounded-xl bg-red-50 border border-red-200">
+                    {% for error in form.non_field_errors %}
+                    <p class="text-sm text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Bio -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">About You</h3>
+                    <div>
+                        <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                        {{ form.bio }}
+                        {{ form.bio.errors }}
+                        <p class="text-xs text-gray-500 mt-1">Tell others about yourself and what you're looking for in skill swaps</p>
+                    </div>
+                </div>
+                
+                <!-- Skills Offered -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Skills You Offer</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.skills_offered.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Select Skills</label>
+                            {{ form.skills_offered }}
+                            {{ form.skills_offered.errors }}
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
+                        </div>
+                        <div>
+                            <label for="{{ form.additional_skills_offered.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Additional Skills</label>
+                            {{ form.additional_skills_offered }}
+                            {{ form.additional_skills_offered.errors }}
+                            <p class="text-xs text-gray-500 mt-1">Comma-separated additional skills</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills Wanted -->
+                <div class="border-b pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Skills You Want</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.skills_wanted.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Select Skills</label>
+                            {{ form.skills_wanted }}
+                            {{ form.skills_wanted.errors }}
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
+                        </div>
+                        <div>
+                            <label for="{{ form.additional_skills_wanted.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Additional Skills</label>
+                            {{ form.additional_skills_wanted }}
+                            {{ form.additional_skills_wanted.errors }}
+                            <p class="text-xs text-gray-500 mt-1">Comma-separated additional skills</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Location -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Location Preferences</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.location_preference.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Location Preference</label>
+                            {{ form.location_preference }}
+                            {{ form.location_preference.errors }}
+                            <p class="text-xs text-gray-500 mt-1">City, State or "Remote"</p>
+                        </div>
+                        <div>
+                            <label class="flex items-center gap-2">
+                                {{ form.accepts_remote }}
+                                <span class="text-sm font-medium text-gray-700">Accept Remote Swaps</span>
+                            </label>
+                            {{ form.accepts_remote.errors }}
+                        </div>
+                    </div>
+                </div>
+                
+                {% if object %}
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <p class="text-sm text-blue-800">
+                        <strong>Credit Balance:</strong> {{ object.credits_balance|floatformat:1 }} credits
+                        ({{ object.credits_earned|floatformat:1 }} earned - {{ object.credits_spent|floatformat:1 }} spent)
+                    </p>
+                </div>
+                {% endif %}
+                
+                <div class="flex justify-end gap-4 pt-6">
+                    <a href="{% url 'accounts:modes_dashboard' %}" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Save Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Matches{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">My Matches</h1>
+            <p class="text-gray-600">View all your matches and connections</p>
+        </div>
+        
+        <!-- Filters -->
+        <div class="card p-6 mb-6">
+            <form method="GET" class="flex flex-col md:flex-row gap-4">
+                <select name="status" class="input">
+                    <option value="all" {% if request.GET.status == 'all' or not request.GET.status %}selected{% endif %}>All Statuses</option>
+                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="viewed" {% if request.GET.status == 'viewed' %}selected{% endif %}>Viewed</option>
+                    <option value="interested" {% if request.GET.status == 'interested' %}selected{% endif %}>Interested</option>
+                    <option value="connected" {% if request.GET.status == 'connected' %}selected{% endif %}>Connected</option>
+                </select>
+                <select name="type" class="input">
+                    <option value="all" {% if request.GET.type == 'all' or not request.GET.type %}selected{% endif %}>All Types</option>
+                    <option value="skill_swap" {% if request.GET.type == 'skill_swap' %}selected{% endif %}>Skill Swap</option>
+                    <option value="freelance_collab" {% if request.GET.type == 'freelance_collab' %}selected{% endif %}>Freelance</option>
+                </select>
+                <button type="submit" class="btn-primary">Filter</button>
+            </form>
+        </div>
+        
+        <!-- Matches List -->
+        {% if matches %}
+        <div class="space-y-4">
+            {% for match in matches %}
+            <div class="card p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-4 flex-1">
+                        {% if match.user_b.avatar %}
+                        <img src="{{ match.user_b.avatar.url }}" alt="{{ match.user_b.full_name }}" class="w-16 h-16 rounded-full object-cover">
+                        {% else %}
+                        <div class="w-16 h-16 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                            {{ match.user_b.first_name|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">
+                                <a href="{% url 'accounts:match_detail' pk=match.pk %}" class="hover:text-brand-600">
+                                    {{ match.user_b.full_name }}
+                                </a>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">{{ match.get_match_type_display }}</p>
+                            {% if match.matching_skills %}
+                            <div class="flex flex-wrap gap-1">
+                                {% for skill in match.matching_skills|slice:":5" %}
+                                <span class="badge bg-gray-100 text-gray-700 text-xs">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-brand-600 mb-1">{{ match.compatibility_score|floatformat:0 }}%</div>
+                            <span class="badge {% if match.status == 'connected' %}bg-green-100 text-green-800{% elif match.status == 'interested' %}bg-blue-100 text-blue-800{% elif match.status == 'viewed' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ match.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-8 flex justify-center gap-4">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}" class="btn-secondary">Previous</a>
+            {% endif %}
+            <span class="px-4 py-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}" class="btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="card p-12 text-center">
+            <p class="text-gray-600 mb-4">No matches found with the selected filters.</p>
+            <a href="{% url 'accounts:match_suggestions' %}" class="btn-primary">Find New Matches</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

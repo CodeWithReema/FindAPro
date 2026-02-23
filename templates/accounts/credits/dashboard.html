@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Credit Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">Credit Dashboard</h1>
+            <p class="text-gray-600">Manage your time-banking credits (1 hour = 1 credit)</p>
+        </div>
+        
+        <!-- Credit Balance Cards -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6 bg-gradient-to-br from-brand-500 to-brand-600 text-white">
+                <p class="text-sm opacity-90 mb-2">Total Balance</p>
+                <p class="text-4xl font-bold">{{ balance|floatformat:2 }}</p>
+                <p class="text-sm opacity-75 mt-1">Credits</p>
+            </div>
+            
+            <div class="card p-6 bg-green-50 border-2 border-green-200">
+                <p class="text-sm text-green-700 mb-2">Available</p>
+                <p class="text-3xl font-bold text-green-700">{{ available_balance|floatformat:2 }}</p>
+                <p class="text-xs text-green-600 mt-1">Ready to spend</p>
+            </div>
+            
+            <div class="card p-6 bg-yellow-50 border-2 border-yellow-200">
+                <p class="text-sm text-yellow-700 mb-2">In Escrow</p>
+                <p class="text-3xl font-bold text-yellow-700">{{ pending_credits|floatformat:2 }}</p>
+                <p class="text-xs text-yellow-600 mt-1">Pending jobs</p>
+            </div>
+            
+            <div class="card p-6 bg-blue-50 border-2 border-blue-200">
+                <p class="text-sm text-blue-700 mb-2">Net Change</p>
+                <p class="text-3xl font-bold {% if net_change >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if net_change >= 0 %}+{% endif %}{{ net_change|floatformat:2 }}
+                </p>
+                <p class="text-xs text-blue-600 mt-1">Last 30 days</p>
+            </div>
+        </div>
+        
+        <!-- Statistics Summary -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">30-Day Summary</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Credits Earned</span>
+                        <span class="text-lg font-semibold text-green-600">+{{ earned_last_30_days|floatformat:2 }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Credits Spent</span>
+                        <span class="text-lg font-semibold text-red-600">-{{ spent_last_30_days|floatformat:2 }}</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-gray-900">Net Change</span>
+                        <span class="text-xl font-bold {% if net_change >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if net_change >= 0 %}+{% endif %}{{ net_change|floatformat:2 }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pending Jobs -->
+            <div class="card p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Pending Jobs</h2>
+                {% if pending_jobs %}
+                <div class="space-y-3">
+                    {% for job in pending_jobs %}
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900">{{ job.title }}</h3>
+                            <span class="badge bg-yellow-100 text-yellow-800 text-xs">{{ job.get_status_display }}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">{{ job.credits_required }} credits in escrow</p>
+                        {% if job.requester == user %}
+                        <p class="text-xs text-gray-500">You requested this service</p>
+                        {% else %}
+                        <p class="text-xs text-gray-500">You're providing this service</p>
+                        {% endif %}
+                        {% if job.status == 'completed' and not job.requester_confirmed or not job.provider_confirmed %}
+                        <a href="{% url 'accounts:confirm_job_completion' job_id=job.pk %}" class="btn-primary text-xs mt-2 inline-block">
+                            Confirm Completion
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-sm">No pending jobs</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Transaction History -->
+        <div class="card p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-900">Transaction History</h2>
+                <div class="flex gap-2">
+                    <select id="type-filter" class="input text-sm" onchange="filterTransactions()">
+                        <option value="all" {% if transaction_type == 'all' %}selected{% endif %}>All Types</option>
+                        <option value="earned" {% if transaction_type == 'earned' %}selected{% endif %}>Earned</option>
+                        <option value="spent" {% if transaction_type == 'spent' %}selected{% endif %}>Spent</option>
+                        <option value="bonus" {% if transaction_type == 'bonus' %}selected{% endif %}>Bonus</option>
+                        <option value="refund" {% if transaction_type == 'refund' %}selected{% endif %}>Refund</option>
+                        <option value="adjustment" {% if transaction_type == 'adjustment' %}selected{% endif %}>Adjustment</option>
+                    </select>
+                </div>
+            </div>
+            
+            {% if transactions %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Date</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Type</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Description</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">From/To</th>
+                            <th class="text-right py-3 px-4 text-sm font-semibold text-gray-700">Amount</th>
+                            <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trans in transactions %}
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-sm text-gray-600">{{ trans.created_at|date:"M d, Y" }}</td>
+                            <td class="py-3 px-4">
+                                <span class="badge {% if trans.transaction_type == 'earned' or trans.transaction_type == 'bonus' %}bg-green-100 text-green-700{% elif trans.transaction_type == 'spent' %}bg-red-100 text-red-700{% else %}bg-gray-100 text-gray-700{% endif %} text-xs">
+                                    {{ trans.get_transaction_type_display }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ trans.description|truncatewords:10 }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-600">
+                                {% if trans.from_user %}
+                                    {% if trans.from_user == user %}You{% else %}{{ trans.from_user.full_name }}{% endif %}
+                                {% else %}
+                                    System
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <span class="font-semibold {% if trans.transaction_type == 'earned' or trans.transaction_type == 'bonus' or trans.transaction_type == 'refund' %}text-green-600{% elif trans.transaction_type == 'spent' %}text-red-600{% else %}text-gray-600{% endif %}">
+                                    {% if trans.transaction_type == 'earned' or trans.transaction_type == 'bonus' or trans.transaction_type == 'refund' %}+{% elif trans.transaction_type == 'spent' %}-{% endif %}{{ trans.credits|floatformat:2 }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="badge {% if trans.status == 'approved' %}bg-green-100 text-green-700{% elif trans.status == 'pending' %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %} text-xs">
+                                    {{ trans.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="mt-6 flex justify-center gap-4">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if transaction_type != 'all' %}&type={{ transaction_type }}{% endif %}" class="btn-secondary">Previous</a>
+                {% endif %}
+                <span class="px-4 py-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if transaction_type != 'all' %}&type={{ transaction_type }}{% endif %}" class="btn-secondary">Next</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No transactions yet</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function filterTransactions() {
+    const type = document.getElementById('type-filter').value;
+    window.location.href = `?type=${type}`;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Match Suggestions{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">Match Suggestions</h1>
+                <p class="text-gray-600">Find compatible users for skill swaps and collaborations</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="{% url 'accounts:refresh_matches' %}" class="btn-secondary">
+                    Refresh Matches
+                </a>
+                <a href="{% url 'accounts:my_matches' %}" class="btn-secondary">
+                    My Matches
+                </a>
+            </div>
+        </div>
+        
+        {% if new_matches_count > 0 %}
+        <div class="card p-4 bg-blue-50 border border-blue-200 mb-6">
+            <p class="text-sm text-blue-800">
+                <strong>New Matches:</strong> You have {{ new_matches_count }} new potential match{{ new_matches_count|pluralize }} this week!
+            </p>
+        </div>
+        {% endif %}
+        
+        <!-- Filter Tabs -->
+        <div class="card p-6 mb-6">
+            <div class="flex gap-4 border-b border-gray-200">
+                <a href="?type=all" 
+                   class="px-4 py-2 font-medium {% if match_type == 'all' %}text-brand-600 border-b-2 border-brand-600{% else %}text-gray-600 hover:text-gray-900{% endif %} transition-colors">
+                    All Matches
+                </a>
+                <a href="?type=skill_swap" 
+                   class="px-4 py-2 font-medium {% if match_type == 'skill_swap' %}text-brand-600 border-b-2 border-brand-600{% else %}text-gray-600 hover:text-gray-900{% endif %} transition-colors">
+                    Skill Swaps
+                </a>
+                <a href="?type=freelance" 
+                   class="px-4 py-2 font-medium {% if match_type == 'freelance' %}text-brand-600 border-b-2 border-brand-600{% else %}text-gray-600 hover:text-gray-900{% endif %} transition-colors">
+                    Freelance Collaborations
+                </a>
+            </div>
+        </div>
+        
+        <!-- Skill Swap Matches -->
+        {% if match_type in 'all skill_swap' %}
+        {% if skill_swap_matches %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-display font-bold text-gray-900 mb-4">Skill Swap Matches</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for match in skill_swap_matches %}
+                <div class="card group">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                {% if match.user_b.avatar %}
+                                <img src="{{ match.user_b.avatar.url }}" alt="{{ match.user_b.full_name }}" class="w-12 h-12 rounded-full object-cover">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                                    {{ match.user_b.first_name|slice:":1"|upper }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ match.user_b.full_name }}</h3>
+                                    <p class="text-xs text-gray-500">Skill Swap Match</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-brand-600">{{ match.compatibility_score|floatformat:0 }}%</div>
+                                <p class="text-xs text-gray-500">Match</p>
+                            </div>
+                        </div>
+                        
+                        {% if match.matching_skills %}
+                        <div class="mb-4">
+                            <p class="text-xs font-semibold text-gray-700 mb-2">Matching Skills:</p>
+                            <div class="flex flex-wrap gap-1">
+                                {% for skill in match.matching_skills|slice:":5" %}
+                                <span class="badge bg-green-100 text-green-700 text-xs">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="grid grid-cols-3 gap-2 text-xs mb-4">
+                            <div>
+                                <p class="text-gray-500">Skills</p>
+                                <p class="font-semibold">{{ match.skill_overlap_percentage|floatformat:0 }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Location</p>
+                                <p class="font-semibold">{{ match.geographic_proximity_score|floatformat:0 }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Reputation</p>
+                                <p class="font-semibold">{{ match.reputation_score|floatformat:0 }}%</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <a href="{% url 'accounts:match_detail' pk=match.pk %}" class="btn-primary flex-1 text-sm">View Match</a>
+                            <form method="POST" action="{% url 'accounts:match_not_interested' pk=match.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-secondary text-sm" title="Not Interested">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card p-8 text-center mb-8">
+            <p class="text-gray-600">No skill swap matches found. Make sure your skill swap listing is active!</p>
+            {% if not user.has_skill_swap_listing %}
+            <a href="{% url 'accounts:skill_swap_create' %}" class="btn-primary mt-4 inline-block">Create Skill Swap Listing</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+        
+        <!-- Freelance Matches -->
+        {% if match_type in 'all freelance' %}
+        {% if freelance_matches %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-display font-bold text-gray-900 mb-4">Freelance Collaboration Matches</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for match in freelance_matches %}
+                <div class="card group">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                {% if match.user_b.avatar %}
+                                <img src="{{ match.user_b.avatar.url }}" alt="{{ match.user_b.full_name }}" class="w-12 h-12 rounded-full object-cover">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                                    {{ match.user_b.first_name|slice:":1"|upper }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ match.user_b.full_name }}</h3>
+                                    <p class="text-xs text-gray-500">Freelance Match</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-brand-600">{{ match.compatibility_score|floatformat:0 }}%</div>
+                                <p class="text-xs text-gray-500">Match</p>
+                            </div>
+                        </div>
+                        
+                        {% if match.matching_skills %}
+                        <div class="mb-4">
+                            <p class="text-xs font-semibold text-gray-700 mb-2">Shared Skills:</p>
+                            <div class="flex flex-wrap gap-1">
+                                {% for skill in match.matching_skills|slice:":5" %}
+                                <span class="badge bg-blue-100 text-blue-700 text-xs">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="grid grid-cols-3 gap-2 text-xs mb-4">
+                            <div>
+                                <p class="text-gray-500">Skills</p>
+                                <p class="font-semibold">{{ match.skill_overlap_percentage|floatformat:0 }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Location</p>
+                                <p class="font-semibold">{{ match.geographic_proximity_score|floatformat:0 }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Reputation</p>
+                                <p class="font-semibold">{{ match.reputation_score|floatformat:0 }}%</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <a href="{% url 'accounts:match_detail' pk=match.pk %}" class="btn-primary flex-1 text-sm">View Match</a>
+                            <form method="POST" action="{% url 'accounts:match_not_interested' pk=match.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-secondary text-sm" title="Not Interested">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card p-8 text-center mb-8">
+            <p class="text-gray-600">No freelance collaboration matches found. Make sure your freelance listing is active!</p>
+            {% if not user.has_freelance_listing %}
+            <a href="{% url 'accounts:freelance_create' %}" class="btn-primary mt-4 inline-block">Create Freelance Listing</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+        
+        {% if not skill_swap_matches and not freelance_matches %}
+        <div class="card p-12 text-center">
+            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Matches Found</h3>
+            <p class="text-gray-600 mb-6">We couldn't find any compatible matches right now. Try refreshing or check back later!</p>
+            <a href="{% url 'accounts:refresh_matches' %}" class="btn-primary">Refresh Matches</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

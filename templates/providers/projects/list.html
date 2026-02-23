@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Community Projects{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">Community Projects</h1>
+                <p class="text-gray-600">Collaborate on multi-person projects in your community</p>
+            </div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'providers:project_create' %}" class="btn-primary">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Create Project
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Recommended Projects -->
+        {% if recommended_projects %}
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">🎯 Projects You'd Be Great For</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                {% for project in recommended_projects %}
+                <div class="card p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="badge {% if project.project_type == 'community' %}bg-green-100 text-green-700{% elif project.project_type == 'creative' %}bg-purple-100 text-purple-700{% elif project.project_type == 'business' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                            {{ project.get_project_type_display }}
+                        </span>
+                        {% if project.is_featured %}
+                        <span class="badge bg-accent-100 text-accent-700">⭐ Featured</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <a href="{% url 'providers:project_detail' pk=project.pk %}" class="hover:text-brand-600">
+                            {{ project.title }}
+                        </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ project.description|truncatewords:20 }}</p>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span>{{ project.location_city }}, {{ project.location_state }}</span>
+                        <span>{{ project.open_roles }} open role{{ project.open_roles|pluralize }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Filters -->
+        <div class="card p-6 mb-6">
+            <form method="GET" class="grid md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <input type="text" name="q" value="{{ request.GET.q }}" class="input" placeholder="Search projects...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <select name="type" class="input">
+                        <option value="">All Types</option>
+                        {% for value, label in project_types %}
+                        <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Compensation</label>
+                    <select name="compensation" class="input">
+                        <option value="">All</option>
+                        {% for value, label in compensation_types %}
+                        <option value="{{ value }}" {% if request.GET.compensation == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <input type="text" name="city" value="{{ request.GET.city }}" class="input" placeholder="City">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Sort</label>
+                    <select name="sort" class="input">
+                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest</option>
+                        <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                        <option value="most_applications" {% if request.GET.sort == 'most_applications' %}selected{% endif %}>Most Applications</option>
+                        <option value="deadline" {% if request.GET.sort == 'deadline' %}selected{% endif %}>Deadline</option>
+                    </select>
+                </div>
+                <div class="md:col-span-5">
+                    <button type="submit" class="btn-primary">Filter Projects</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Projects List -->
+        {% if projects %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for project in projects %}
+            <article class="card group hover:shadow-lg transition-shadow">
+                <a href="{% url 'providers:project_detail' pk=project.pk %}">
+                    {% if project.featured_image %}
+                    <div class="aspect-video overflow-hidden rounded-t-xl">
+                        <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    {% endif %}
+                </a>
+                
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="badge {% if project.project_type == 'community' %}bg-green-100 text-green-700{% elif project.project_type == 'creative' %}bg-purple-100 text-purple-700{% elif project.project_type == 'business' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                            {{ project.get_project_type_display }}
+                        </span>
+                        <span class="badge {% if project.status == 'recruiting' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                            {{ project.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors">
+                        <a href="{% url 'providers:project_detail' pk=project.pk %}">{{ project.title }}</a>
+                    </h3>
+                    
+                    <p class="text-sm text-gray-600 mb-4 line-clamp-3">{{ project.description|truncatewords:25 }}</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            </svg>
+                            {{ project.location_city }}, {{ project.location_state }}
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ project.timeline_description|default:"Timeline TBD" }}
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            {{ project.open_roles }} open role{{ project.open_roles|pluralize }} • {{ project.filled_roles }} filled
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-2">
+                            {% if project.creator.avatar %}
+                            <img src="{{ project.creator.avatar.url }}" alt="{{ project.creator.full_name }}" class="w-8 h-8 rounded-full object-cover">
+                            {% else %}
+                            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-sm">
+                                {{ project.creator.first_name|slice:":1"|upper }}
+                            </div>
+                            {% endif %}
+                            <span class="text-sm text-gray-600">{{ project.creator.full_name }}</span>
+                        </div>
+                        <a href="{% url 'providers:project_detail' pk=project.pk %}" class="text-brand-600 font-medium text-sm hover:text-brand-700">
+                            View Details →
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-8 flex justify-center gap-4">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}" class="btn-secondary">Previous</a>
+            {% endif %}
+            <span class="px-4 py-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}" class="btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="card p-12 text-center">
+            <p class="text-gray-600 mb-4">No projects found with the selected filters.</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'providers:project_create' %}" class="btn-primary">Create First Project</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

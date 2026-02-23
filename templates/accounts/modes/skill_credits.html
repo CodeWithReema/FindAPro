@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Skill Credits{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-12 px-4 bg-gradient-to-br from-brand-50 via-white to-accent-50">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">My Skill Credits</h1>
+                <p class="text-gray-600">Track your skill swap transactions</p>
+            </div>
+            <a href="{% url 'accounts:skill_credit_create' %}" class="btn-primary">Record Swap</a>
+        </div>
+        
+        <!-- Credits Given -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Credits Given</h2>
+            {% if credits_given %}
+            <div class="space-y-4">
+                {% for credit in credits_given %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold text-gray-900">To: {{ credit.to_user.full_name }}</p>
+                            <p class="text-sm text-gray-600 mt-1">{{ credit.description }}</p>
+                            {% if credit.skill_swapped %}
+                            <span class="badge bg-gray-100 text-gray-700 mt-2">{{ credit.skill_swapped.name }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-green-600">+{{ credit.credits }} credits</p>
+                            <p class="text-xs text-gray-500">{{ credit.swap_date }}</p>
+                            <span class="badge {% if credit.status == 'approved' %}bg-green-100 text-green-800{% elif credit.status == 'pending' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %} mt-2">
+                                {{ credit.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-600">No credits given yet.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Credits Received -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Credits Received</h2>
+            {% if credits_received %}
+            <div class="space-y-4">
+                {% for credit in credits_received %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold text-gray-900">From: {{ credit.from_user.full_name }}</p>
+                            <p class="text-sm text-gray-600 mt-1">{{ credit.description }}</p>
+                            {% if credit.skill_swapped %}
+                            <span class="badge bg-gray-100 text-gray-700 mt-2">{{ credit.skill_swapped.name }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-blue-600">+{{ credit.credits }} credits</p>
+                            <p class="text-xs text-gray-500">{{ credit.swap_date }}</p>
+                            {% if credit.status == 'pending' %}
+                            <form method="POST" action="{% url 'accounts:skill_credit_approve' pk=credit.pk %}" class="mt-2">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-primary text-xs">Approve</button>
+                            </form>
+                            {% else %}
+                            <span class="badge {% if credit.status == 'approved' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %} mt-2">
+                                {{ credit.get_status_display }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-600">No credits received yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

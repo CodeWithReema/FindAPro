@@ -77,6 +77,15 @@ class ProviderSearchView(ListView):
         if verified == 'true':
             queryset = queryset.filter(is_verified=True)
         
+        # Filter by job acceptance preferences
+        accepts_credits = self.request.GET.get('accepts_credits', '').strip()
+        if accepts_credits == 'true':
+            queryset = queryset.filter(accepts_credit_jobs=True)
+        
+        accepts_barter = self.request.GET.get('accepts_barter', '').strip()
+        if accepts_barter == 'true':
+            queryset = queryset.filter(accepts_barter=True)
+        
         # Sorting
         sort = self.request.GET.get('sort', 'rating')
         if sort == 'rating':
@@ -104,6 +113,8 @@ class ProviderSearchView(ListView):
         context['selected_zip'] = self.request.GET.get('zip', '')
         context['selected_pricing'] = self.request.GET.get('pricing', '')
         context['verified_only'] = self.request.GET.get('verified', '')
+        context['accepts_credits'] = self.request.GET.get('accepts_credits', '')
+        context['accepts_barter'] = self.request.GET.get('accepts_barter', '')
         context['sort_by'] = self.request.GET.get('sort', 'rating')
         context['total_results'] = self.get_queryset().count()
         return context

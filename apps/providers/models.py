@@ -7,6 +7,21 @@ from django.conf import settings
 from django.urls import reverse
 from django.db.models import Avg
 
+# Import unified job models so Django discovers them
+from .unified_jobs import UnifiedJob, JobProposal, JobMessage
+
+# Import skill analytics models so Django discovers them
+from .skill_analytics import SkillDemand, SkillSupply, SkillMarketOpportunity
+
+# Import community project models so Django discovers them
+from .community_projects import (
+    CommunityProject, ProjectRole, ProjectApplication,
+    ProjectMember, ProjectMilestone, ProjectFile, ProjectMessage
+)
+
+# Import badge models so Django discovers them
+from .user_badges import UserBadge, UserBadgeAward
+
 
 class ServiceCategory(models.Model):
     """Category for service providers."""
@@ -44,6 +59,20 @@ class ServiceProvider(models.Model):
         ('$$$', 'Premium ($$$)'),
         ('$$$$', 'Luxury ($$$$)'),
     ]
+    
+    # Job Acceptance Preferences
+    accepts_paid_jobs = models.BooleanField(
+        default=True,
+        help_text='Accept paid job requests'
+    )
+    accepts_credit_jobs = models.BooleanField(
+        default=False,
+        help_text='Accept credit-based skill swap jobs'
+    )
+    accepts_barter = models.BooleanField(
+        default=False,
+        help_text='Accept barter proposals'
+    )
     
     # Owner (optional - can be linked to user)
     user = models.OneToOneField(
