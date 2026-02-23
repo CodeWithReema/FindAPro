@@ -431,18 +431,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validate current step
     function validateStep(step) {
         const currentStepEl = document.querySelector(`.quiz-step[data-step="${step}"]`);
-        
+        // Remove any previous validation message
+        currentStepEl.querySelectorAll('.quiz-validation-msg').forEach(el => el.remove());
+        currentStepEl.classList.remove('quiz-step-invalid');
+
         if (step === 2) {
             const city = currentStepEl.querySelector('input[name="city"]');
             if (!city.value.trim()) {
                 city.focus();
                 city.classList.add('border-red-500');
+                const msg = document.createElement('p');
+                msg.className = 'quiz-validation-msg mt-2 text-red-600 text-sm';
+                msg.textContent = 'Please enter your city.';
+                city.closest('.max-w-md').appendChild(msg);
                 return false;
             }
             city.classList.remove('border-red-500');
         } else {
             const radio = currentStepEl.querySelector('input[type="radio"]:checked');
             if (!radio) {
+                currentStepEl.classList.add('quiz-step-invalid');
+                const msg = document.createElement('p');
+                msg.className = 'quiz-validation-msg mt-4 text-center text-red-600 font-medium';
+                msg.textContent = 'Please select an option to continue.';
+                const heading = currentStepEl.querySelector('.text-center.mb-8');
+                if (heading && heading.nextElementSibling) {
+                    currentStepEl.insertBefore(msg, heading.nextElementSibling);
+                } else {
+                    currentStepEl.insertBefore(msg, currentStepEl.firstChild);
+                }
                 return false;
             }
         }

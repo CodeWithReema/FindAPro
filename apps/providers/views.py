@@ -172,6 +172,69 @@ class ProviderDetailView(DetailView):
         return distribution
 
 
+def _get_category_sections():
+    """Group category names into section types for display (e.g. mobile)."""
+    from collections import defaultdict
+    section_map = {
+        'Plumbing': 'Trades & Home',
+        'Electrical': 'Trades & Home',
+        'HVAC': 'Trades & Home',
+        'Carpentry': 'Trades & Home',
+        'Auto Repair': 'Trades & Home',
+        'Cleaning': 'Trades & Home',
+        'Landscaping': 'Trades & Home',
+        'Painting': 'Trades & Home',
+        'Roofing': 'Trades & Home',
+        'Handyman': 'Trades & Home',
+        'Graphic Design': 'Creative & Digital',
+        'Web Development': 'Creative & Digital',
+        'Photography': 'Creative & Digital',
+        'Videography': 'Creative & Digital',
+        'Content Writing': 'Creative & Digital',
+        'Copywriting': 'Creative & Digital',
+        'Social Media Management': 'Creative & Digital',
+        'SEO & Marketing': 'Creative & Digital',
+        'UI/UX Design': 'Creative & Digital',
+        'Animation': 'Creative & Digital',
+        'Video Editing': 'Creative & Digital',
+        'Illustration': 'Creative & Digital',
+        'Accounting': 'Professional Services',
+        'Legal Consulting': 'Professional Services',
+        'Business Consulting': 'Professional Services',
+        'HR Services': 'Professional Services',
+        'Career Coaching': 'Professional Services',
+        'Financial Planning': 'Professional Services',
+        'Tax Preparation': 'Professional Services',
+        'Virtual Assistant': 'Professional Services',
+        'Translation': 'Professional Services',
+        'Personal Training': 'Wellness & Personal',
+        'Yoga Instruction': 'Wellness & Personal',
+        'Nutrition Coaching': 'Wellness & Personal',
+        'Massage Therapy': 'Wellness & Personal',
+        'Life Coaching': 'Wellness & Personal',
+        'Mental Health Counseling': 'Wellness & Personal',
+        'Pet Care': 'Wellness & Personal',
+        'Tutoring': 'Wellness & Personal',
+        'Music Lessons': 'Wellness & Personal',
+        'Event Planning': 'Events & Hospitality',
+        'Catering': 'Events & Hospitality',
+        'DJ Services': 'Events & Hospitality',
+        'Bartending': 'Events & Hospitality',
+        'Floral Design': 'Events & Hospitality',
+        'Party Entertainment': 'Events & Hospitality',
+        'Wedding Planning': 'Events & Hospitality',
+        'IT Support': 'Tech & IT',
+        'Computer Repair': 'Tech & IT',
+        'Network Setup': 'Tech & IT',
+        'Cybersecurity': 'Tech & IT',
+        'App Development': 'Tech & IT',
+        'Database Management': 'Tech & IT',
+        'Cloud Services': 'Tech & IT',
+        'Tech Training': 'Tech & IT',
+    }
+    return section_map
+
+
 class CategoryListView(ListView):
     """List all service categories."""
     
@@ -183,6 +246,20 @@ class CategoryListView(ListView):
         return ServiceCategory.objects.filter(is_active=True).annotate(
             provider_count_annotated=Count('providers', filter=Q(providers__is_active=True))
         )
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = list(context['categories'])
+        section_map = _get_category_sections()
+        sections = {}
+        for cat in categories:
+            section_name = section_map.get(cat.name, 'Other')
+            if section_name not in sections:
+                sections[section_name] = []
+            sections[section_name].append(cat)
+        order = ['Trades & Home', 'Creative & Digital', 'Professional Services', 'Wellness & Personal', 'Events & Hospitality', 'Tech & IT', 'Other']
+        context['category_sections'] = [(name, sections.get(name, [])) for name in order if sections.get(name)]
+        return context
 
 
 class CategoryDetailView(DetailView):

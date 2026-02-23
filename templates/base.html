@@ -24,7 +24,7 @@
 <body class="min-h-screen flex flex-col bg-gray-50">
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 glass border-b border-gray-200/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[51]">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <a href="{% url 'core:home' %}" class="flex items-center gap-2 group">
@@ -66,7 +66,7 @@
                             </svg>
                         </button>
                         <div class="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50">
-                            <div class="py-2 max-h-96 overflow-y-auto">
+                            <div class="py-2 max-h-[32rem] overflow-y-scroll overscroll-contain">
                                 {% for cat in nav_categories %}
                                 <a href="{% url 'providers:category_detail' slug=cat.slug %}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-colors">
                                     {% if cat.icon %}
@@ -223,15 +223,28 @@
             </div>
         </div>
         
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
-            <div class="px-4 py-4 space-y-2 bg-white">
-                <a href="{% url 'providers:search' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Find Pros</a>
-                <a href="{% url 'providers:category_list' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Categories</a>
-                {% if not user.is_authenticated %}
-                <hr class="my-2">
-                <a href="{% url 'accounts:login' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Sign In</a>
-                {% endif %}
+        <!-- Mobile Menu: right-side drawer + backdrop -->
+        <div id="mobile-menu" class="fixed inset-0 z-40 md:hidden hidden group">
+            <!-- Backdrop: dims the rest of the page, click to close -->
+            <button type="button" id="mobile-menu-backdrop" aria-label="Close menu" class="absolute top-16 left-0 right-0 bottom-0 bg-gray-900/40 transition-opacity duration-300"></button>
+            <!-- Drawer: right side, starts below navbar (h-16), fills remaining height -->
+            <div id="mobile-menu-drawer" class="absolute top-16 right-0 h-[calc(100vh-4rem)] w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto transition-transform duration-300 ease-out translate-x-full group-[.open]:translate-x-0" onclick="event.stopPropagation()">
+                <div class="px-4 py-4 space-y-2">
+                    <a href="{% url 'providers:emergency' %}" class="block px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 font-medium">Emergency</a>
+                    <a href="{% url 'providers:smart_match' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Match Quiz</a>
+                    {% if user.is_authenticated and user.has_provider_profile %}
+                    <a href="{% url 'providers:profile_status' %}" class="block px-4 py-2 rounded-lg text-brand-600 hover:bg-brand-50 font-semibold">My Profile</a>
+                    {% else %}
+                    <a href="{% url 'providers:join_as_pro' %}" class="block px-4 py-2 rounded-lg text-brand-600 hover:bg-brand-50 font-semibold">Join as Pro</a>
+                    {% endif %}
+                    <a href="{% url 'providers:search' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Find Pros</a>
+                    <a href="{% url 'providers:category_list' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Categories</a>
+                    {% if not user.is_authenticated %}
+                    <hr class="my-2">
+                    <a href="{% url 'accounts:login' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Sign In</a>
+                    <a href="{% url 'accounts:register' %}" class="block px-4 py-2 rounded-lg text-brand-600 hover:bg-brand-50 font-semibold">Get Started</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
@@ -365,7 +378,25 @@
     <!-- Mobile Menu Script -->
     <script>
         document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+            const menu = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.contains('open');
+            if (isOpen) {
+                menu.classList.remove('open');
+                setTimeout(function() { menu.classList.add('hidden'); }, 300);
+            } else {
+                menu.classList.remove('hidden');
+                requestAnimationFrame(function() { menu.classList.add('open'); });
+            }
+        });
+        
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.remove('open');
+            setTimeout(function() { menu.classList.add('hidden'); }, 300);
+        }
+        document.getElementById('mobile-menu-backdrop').addEventListener('click', closeMobileMenu);
+        document.getElementById('mobile-menu').addEventListener('click', function(e) {
+            if (e.target === this || e.target.id === 'mobile-menu-backdrop') closeMobileMenu();
         });
         
         // Auto-dismiss messages
