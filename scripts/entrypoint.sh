@@ -24,6 +24,7 @@ python manage.py makemigrations accounts --noinput
 python manage.py makemigrations providers --noinput
 python manage.py makemigrations reviews --noinput
 python manage.py makemigrations core --noinput
+python manage.py makemigrations bcubed --noinput
 
 # Apply database migrations
 echo "Applying database migrations..."

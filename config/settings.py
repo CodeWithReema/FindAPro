@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.providers',
     'apps.reviews',
     'apps.core',
+    'apps.bcubed',
 ]
 
 MIDDLEWARE = [
@@ -153,6 +154,9 @@ CORS_ALLOWED_ORIGINS = config(
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
+
+# OpenAI
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
 
 # Messages
 from django.contrib.messages import constants as messages

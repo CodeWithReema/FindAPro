@@ -15,7 +15,8 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('providers/', include('apps.providers.urls')),
     path('reviews/', include('apps.reviews.urls')),
-    
+    path('bcubed/', include('apps.bcubed.urls', namespace='bcubed')),
+
     # API URLs
     path('api/', include('apps.providers.api_urls')),
     path('api/', include('apps.reviews.api_urls')),
