@@ -94,7 +94,7 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -149,7 +149,7 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -214,7 +214,7 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -278,7 +278,7 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -338,7 +338,7 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -381,10 +381,10 @@
             });
             const json = await res.json();
             resultBox.classList.remove('hidden');
-            resultBox.querySelector('.result-content').textContent = json.result || json.error || 'Something went wrong.';
+            renderResult(resultBox.querySelector('.result-content'), json.result || json.error || 'Something went wrong.');
         } catch (err) {
             resultBox.classList.remove('hidden');
-            resultBox.querySelector('.result-content').textContent = 'Connection error. Please try again.';
+            renderResult(resultBox.querySelector('.result-content'), 'Connection error. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = origHTML;
@@ -441,6 +441,82 @@
         } catch (e) {
             alert('Export failed. Please try again.');
         }
+    }
+
+    function renderResult(el, content) {
+        const lines = String(content || '').replace(/\r\n/g, '\n').split('\n');
+        const out = [];
+        let inList = false;
+        let hasAnyHeading = false;
+        let sectionOpen = false;
+
+        const closeList = () => {
+            if (inList) { out.push('</ul>'); inList = false; }
+        };
+
+        const closeSection = () => {
+            if (sectionOpen) {
+                closeList();
+                out.push('</section>');
+                sectionOpen = false;
+            }
+        };
+
+        const openSection = (title, level) => {
+            hasAnyHeading = true;
+            closeSection();
+            const base = level === 2
+                ? 'mt-4 first:mt-0 rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm'
+                : 'mt-3 rounded-xl border border-gray-200 bg-white/50 p-3';
+            out.push(`<section class="${base}">`);
+            sectionOpen = true;
+            if (level === 2) {
+                out.push(`<h3 class="font-display text-base sm:text-lg font-bold text-gray-900 tracking-tight">${escapeHtml(title)}</h3>`);
+            } else {
+                out.push(`<h4 class="font-display text-sm sm:text-base font-semibold text-gray-900">${escapeHtml(title)}</h4>`);
+            }
+        };
+
+        out.push('<div class="space-y-3">');
+
+        for (const raw of lines) {
+            const t = raw.trim();
+            if (!t) { closeList(); continue; }
+
+            if (t.startsWith('## ')) { openSection(t.slice(3), 2); continue; }
+            if (t.startsWith('### ')) { openSection(t.slice(4), 3); continue; }
+
+            const bullet = t.match(/^(-|\*|\d+\.)\s+(.*)$/);
+            if (bullet) {
+                if (!inList) {
+                    out.push('<ul class="mt-2 list-disc pl-5 space-y-1 text-sm text-gray-800 leading-relaxed">');
+                    inList = true;
+                }
+                out.push(`<li>${escapeHtml(bullet[2])}</li>`);
+                continue;
+            }
+
+            closeList();
+            out.push(`<p class="text-sm text-gray-800 leading-relaxed">${escapeHtml(t)}</p>`);
+        }
+
+        closeList();
+        closeSection();
+        out.push('</div>');
+
+        const html = out.join('');
+        el.innerHTML = hasAnyHeading
+            ? html
+            : `<div class="rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm">${html}</div>`;
+    }
+
+    function escapeHtml(s) {
+        return String(s)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
     }
 </script>
 {% endblock %}

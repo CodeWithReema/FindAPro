@@ -14,6 +14,18 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from .models import BcubedResult
 
 
+PRESENTATION_FORMAT_INSTRUCTIONS = (
+    "Return your answer in clean, presentation-ready Markdown.\n"
+    "Rules:\n"
+    "- Use short headings (##) and subheadings (###) where helpful.\n"
+    "- Prefer bullet points and numbered steps.\n"
+    "- Keep lines concise; avoid long paragraphs.\n"
+    "- When you give options, format as a list of labeled options.\n"
+    "- Do NOT include disclaimers unless explicitly requested.\n"
+    "- Do NOT wrap the whole response in a code block.\n"
+)
+
+
 class ProviderRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -103,6 +115,7 @@ def export_docx(request):
 def _openai_chat(system_prompt, user_prompt):
     import openai
     client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+    system_prompt = system_prompt.strip() + "\n\n" + PRESENTATION_FORMAT_INSTRUCTIONS
     response = client.chat.completions.create(
         model='gpt-4o-mini',
         messages=[

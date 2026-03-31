@@ -34,8 +34,23 @@
     <!-- Tools -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
 
+        <!-- Quick nav -->
+        <div class="bg-white/70 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">Start here</p>
+                    <p class="text-sm text-gray-600">Run the tools in order or jump to what you need.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="#tool-pitch" class="px-3 py-1.5 text-sm font-semibold rounded-xl bg-brand-100 text-brand-700 hover:bg-brand-200 transition-colors">Pitch</a>
+                    <a href="#tool-checklist" class="px-3 py-1.5 text-sm font-semibold rounded-xl bg-brand-100 text-brand-700 hover:bg-brand-200 transition-colors">Checklist</a>
+                    <a href="#tool-niche" class="px-3 py-1.5 text-sm font-semibold rounded-xl bg-brand-100 text-brand-700 hover:bg-brand-200 transition-colors">Niche</a>
+                </div>
+            </div>
+        </div>
+
         <!-- Tool 1: Business Pitch Generator -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
+        <div id="tool-pitch" class="scroll-mt-28 bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
             <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
                 <div class="w-11 h-11 rounded-xl bg-brand-100 flex items-center justify-center group-hover:bg-brand-200/80 transition-colors">
                     <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,13 +105,13 @@
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 mb-2">Copy to clipboard or export as a .docx file.</p>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
 
         <!-- Tool 2: Startup Checklist -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
+        <div id="tool-checklist" class="scroll-mt-28 bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
             <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
                 <div class="w-11 h-11 rounded-xl bg-brand-100 flex items-center justify-center group-hover:bg-brand-200/80 transition-colors">
                     <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,13 +161,13 @@
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 mb-2">Copy to clipboard or export as a .docx file.</p>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
 
         <!-- Tool 3: Niche Finder -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
+        <div id="tool-niche" class="scroll-mt-28 bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-brand-500">
             <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
                 <div class="w-11 h-11 rounded-xl bg-brand-100 flex items-center justify-center group-hover:bg-brand-200/80 transition-colors">
                     <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,15 +198,15 @@
                     </button>
                 </form>
                 <div id="result-niche" class="hidden mt-6 p-5 bg-gradient-to-br from-brand-50 to-brand-50/50 border border-brand-200/60 rounded-xl shadow-inner">
-                    <div class="flex justify-between items-center mb-3">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
                         <span class="text-xs font-semibold text-brand-600 uppercase tracking-wide flex items-center gap-2">
                             <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             Your Niche Suggestions
                         </span>
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="exportToDocx('result-niche', 'Niche Suggestions')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-brand-600 transition-colors px-2 py-1 rounded-lg hover:bg-brand-100" title="Export to Word">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                Export .docx
+                            <button type="button" onclick="exportToDocx('result-niche', 'Niche Suggestions')" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-brand-700 bg-white border-2 border-brand-300 rounded-lg hover:bg-brand-50 hover:border-brand-400 transition-colors shadow-sm" title="Download as Word document">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export to Word
                             </button>
                             <button onclick="copyResult('result-niche')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-brand-600 transition-colors px-2 py-1 rounded-lg hover:bg-brand-100">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
@@ -199,7 +214,8 @@
                             </button>
                         </div>
                     </div>
-                    <p class="result-content text-gray-700 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                    <p class="text-xs text-gray-500 mb-2">Copy to clipboard or export as a .docx file.</p>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
                 </div>
             </div>
         </div>
@@ -243,10 +259,10 @@
             });
             const json = await res.json();
             resultBox.classList.remove('hidden');
-            resultBox.querySelector('.result-content').textContent = json.result || json.error || 'Something went wrong.';
+            renderResult(resultBox.querySelector('.result-content'), json.result || json.error || 'Something went wrong.');
         } catch (err) {
             resultBox.classList.remove('hidden');
-            resultBox.querySelector('.result-content').textContent = 'Connection error. Please try again.';
+            renderResult(resultBox.querySelector('.result-content'), 'Connection error. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = origHTML;
@@ -303,6 +319,92 @@
         } catch (e) {
             alert('Export failed. Please try again.');
         }
+    }
+
+    function renderResult(el, content) {
+        // Professional, consistent rendering (safe: no HTML injection).
+        // Supports: ##, ###, bullets (-/*/1.), and plain paragraphs.
+        const lines = String(content || '').replace(/\r\n/g, '\n').split('\n');
+        const out = [];
+        let inList = false;
+        let hasAnyHeading = false;
+        let sectionOpen = false;
+
+        const closeList = () => {
+            if (inList) { out.push('</ul>'); inList = false; }
+        };
+
+        const closeSection = () => {
+            if (sectionOpen) {
+                closeList();
+                out.push('</section>');
+                sectionOpen = false;
+            }
+        };
+
+        const openSection = (title, level) => {
+            hasAnyHeading = true;
+            closeSection();
+            const base = level === 2
+                ? 'mt-4 first:mt-0 rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm'
+                : 'mt-3 rounded-xl border border-gray-200 bg-white/50 p-3';
+            out.push(`<section class="${base}">`);
+            sectionOpen = true;
+            if (level === 2) {
+                out.push(`<h3 class="font-display text-base sm:text-lg font-bold text-gray-900 tracking-tight">${escapeHtml(title)}</h3>`);
+            } else {
+                out.push(`<h4 class="font-display text-sm sm:text-base font-semibold text-gray-900">${escapeHtml(title)}</h4>`);
+            }
+        };
+
+        // Start a wrapper so even plain text looks like a report.
+        out.push('<div class="space-y-3">');
+
+        for (const raw of lines) {
+            const t = raw.trim();
+            if (!t) { closeList(); continue; }
+
+            if (t.startsWith('## ')) {
+                openSection(t.slice(3), 2);
+                continue;
+            }
+            if (t.startsWith('### ')) {
+                openSection(t.slice(4), 3);
+                continue;
+            }
+
+            const bullet = t.match(/^(-|\*|\d+\.)\s+(.*)$/);
+            if (bullet) {
+                if (!inList) {
+                    out.push('<ul class="mt-2 list-disc pl-5 space-y-1 text-sm text-gray-800 leading-relaxed">');
+                    inList = true;
+                }
+                out.push(`<li>${escapeHtml(bullet[2])}</li>`);
+                continue;
+            }
+
+            closeList();
+            out.push(`<p class="text-sm text-gray-800 leading-relaxed">${escapeHtml(t)}</p>`);
+        }
+
+        closeList();
+        closeSection();
+        out.push('</div>');
+
+        // If the model didn’t return headings, wrap it in a single report card.
+        const html = out.join('');
+        el.innerHTML = hasAnyHeading
+            ? html
+            : `<div class="rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm">${html}</div>`;
+    }
+
+    function escapeHtml(s) {
+        return String(s)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
     }
 </script>
 {% endblock %}
