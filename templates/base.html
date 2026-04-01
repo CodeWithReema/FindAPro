@@ -51,6 +51,9 @@
                         <a href="{% url 'providers:profile_status' %}" class="nav-link text-brand-600 font-semibold hover:text-brand-700">
                             My Profile
                         </a>
+                        <a href="{% url 'bcubed:hub' %}" class="inline-flex items-center px-3 py-1.5 rounded-lg text-white text-sm font-bold tracking-wide transition-all hover:scale-105 hover:opacity-90" style="background: linear-gradient(135deg, #16a34a 0%, #d946ef 60%, #f59e0b 100%); box-shadow: 0 2px 12px rgba(217,70,239,0.4);">
+                            B³
+                        </a>
                         {% else %}
                         <a href="{% url 'providers:join_as_pro' %}" class="nav-link text-brand-600 font-semibold hover:text-brand-700">
                             Join as Pro
@@ -228,6 +231,9 @@
             <div class="px-4 py-4 space-y-2 bg-white">
                 <a href="{% url 'providers:search' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Find Pros</a>
                 <a href="{% url 'providers:category_list' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Categories</a>
+                {% if user.is_authenticated and user.has_provider_profile %}
+                <a href="{% url 'bcubed:hub' %}" class="block px-4 py-2 rounded-lg font-bold text-brand-600 hover:bg-brand-50">B³ Hub</a>
+                {% endif %}
                 {% if not user.is_authenticated %}
                 <hr class="my-2">
                 <a href="{% url 'accounts:login' %}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600">Sign In</a>

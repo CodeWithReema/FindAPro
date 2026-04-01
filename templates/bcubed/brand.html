@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Brand — B³ Hub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-accent-50/50 via-white to-gray-50/80">
+
+    <!-- Stage Header -->
+    <div class="relative bg-white border-b border-gray-100 shadow-sm">
+        <div class="absolute inset-0 bg-gradient-to-r from-accent-500/5 via-transparent to-transparent"></div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <a href="{% url 'bcubed:hub' %}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-accent-600 transition-colors mb-5 font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Back to B³ Hub
+            </a>
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-500 to-purple-600 flex items-center justify-center shadow-lg shadow-accent-500/30 flex-shrink-0 ring-4 ring-accent-100">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h1 class="font-display font-bold text-3xl text-gray-900">Brand</h1>
+                        <span class="px-3 py-1 bg-accent-100 text-accent-700 rounded-full text-xs font-semibold uppercase tracking-wide">Stage 2</span>
+                    </div>
+                    <p class="text-gray-600 mt-1">Build a brand that gets noticed and remembered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+
+        <!-- Tool 1: Business Name Generator -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-accent-500">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
+                <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center group-hover:bg-accent-200/80 transition-colors">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-display font-semibold text-lg text-gray-900">Business Name Generator</h2>
+                    <p class="text-sm text-gray-500">Get 5 creative, memorable business names with reasoning</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="callTool(event, '{% url "bcubed:api_names" %}', 'result-names')">
+                    {% csrf_token %}
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Type <span class="text-red-500">*</span></label>
+                            <input type="text" name="business_type" placeholder="e.g. landscaping, tutoring, catering" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Style Preference</label>
+                            <select name="style" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                                <option value="professional">Professional &amp; trustworthy</option>
+                                <option value="modern">Modern &amp; minimal</option>
+                                <option value="friendly">Friendly &amp; approachable</option>
+                                <option value="bold">Bold &amp; energetic</option>
+                                <option value="local">Local &amp; community-focused</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Business Values</label>
+                        <input type="text" name="values" placeholder="e.g. reliability, eco-friendly, family-owned"
+                            class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-accent-500 to-purple-600 hover:from-accent-600 hover:to-purple-700 shadow-lg shadow-accent-500/25 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Generate Names
+                    </button>
+                </form>
+                <div id="result-names" class="hidden mt-6 p-5 bg-gradient-to-br from-accent-50 to-accent-50/50 border border-accent-200/60 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-accent-600 uppercase tracking-wide flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Business Name Ideas
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportToDocx('result-names', 'Business Name Ideas')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100" title="Export to Word">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export .docx
+                            </button>
+                            <button onclick="copyResult('result-names')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool 2: Tagline Creator -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-accent-500">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
+                <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center group-hover:bg-accent-200/80 transition-colors">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-display font-semibold text-lg text-gray-900">Tagline Creator</h2>
+                    <p class="text-sm text-gray-500">5 punchy taglines that stick in your customer's mind</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="callTool(event, '{% url "bcubed:api_tagline" %}', 'result-tagline')">
+                    {% csrf_token %}
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="business_name" placeholder="e.g. ProClean, SparkFix" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">What You Do <span class="text-red-500">*</span></label>
+                            <input type="text" name="what_you_do" placeholder="e.g. home cleaning, electrical repairs" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-accent-500 to-purple-600 hover:from-accent-600 hover:to-purple-700 shadow-lg shadow-accent-500/25 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Create Taglines
+                    </button>
+                </form>
+                <div id="result-tagline" class="hidden mt-6 p-5 bg-gradient-to-br from-accent-50 to-accent-50/50 border border-accent-200/60 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-accent-600 uppercase tracking-wide flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Tagline Options
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportToDocx('result-tagline', 'Tagline Options')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100" title="Export to Word">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export .docx
+                            </button>
+                            <button onclick="copyResult('result-tagline')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool 3: Logo Concept Generator -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-accent-500">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
+                <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center group-hover:bg-accent-200/80 transition-colors">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-display font-semibold text-lg text-gray-900">Logo Concept Generator</h2>
+                    <p class="text-sm text-gray-500">Get a detailed logo concept — colors, icon, typography, and feel</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="callTool(event, '{% url "bcubed:api_logo" %}', 'result-logo')">
+                    {% csrf_token %}
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="business_name" placeholder="e.g. ProClean, SparkFix" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Type <span class="text-red-500">*</span></label>
+                            <input type="text" name="business_type" placeholder="e.g. plumbing, landscaping" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Visual Style</label>
+                        <select name="style" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                            <option value="modern and minimal">Modern &amp; Minimal</option>
+                            <option value="bold and energetic">Bold &amp; Energetic</option>
+                            <option value="classic and trustworthy">Classic &amp; Trustworthy</option>
+                            <option value="friendly and approachable">Friendly &amp; Approachable</option>
+                            <option value="luxury and premium">Luxury &amp; Premium</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-accent-500 to-purple-600 hover:from-accent-600 hover:to-purple-700 shadow-lg shadow-accent-500/25 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Generate Logo Concept
+                    </button>
+                </form>
+                <div id="result-logo" class="hidden mt-6 p-5 bg-gradient-to-br from-accent-50 to-accent-50/50 border border-accent-200/60 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-accent-600 uppercase tracking-wide flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Logo Concept
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportToDocx('result-logo', 'Logo Concept')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100" title="Export to Word">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export .docx
+                            </button>
+                            <button onclick="copyResult('result-logo')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool 4: Marketing Copy Writer -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-accent-500">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
+                <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center group-hover:bg-accent-200/80 transition-colors">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-display font-semibold text-lg text-gray-900">Marketing Copy Writer</h2>
+                    <p class="text-sm text-gray-500">A professional bio and description ready to use on your profile</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="callTool(event, '{% url "bcubed:api_copy" %}', 'result-copy')">
+                    {% csrf_token %}
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Service <span class="text-red-500">*</span></label>
+                            <input type="text" name="service" placeholder="e.g. residential plumbing, dog grooming" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Target Audience</label>
+                            <input type="text" name="target_audience" placeholder="e.g. homeowners, small businesses"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
+                        <select name="tone" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                            <option value="professional">Professional</option>
+                            <option value="friendly and conversational">Friendly &amp; Conversational</option>
+                            <option value="bold and confident">Bold &amp; Confident</option>
+                            <option value="warm and community-focused">Warm &amp; Community-focused</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-accent-500 to-purple-600 hover:from-accent-600 hover:to-purple-700 shadow-lg shadow-accent-500/25 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Write My Copy
+                    </button>
+                </form>
+                <div id="result-copy" class="hidden mt-6 p-5 bg-gradient-to-br from-accent-50 to-accent-50/50 border border-accent-200/60 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-accent-600 uppercase tracking-wide flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Your Marketing Copy
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportToDocx('result-copy', 'Marketing Copy')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100" title="Export to Word">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export .docx
+                            </button>
+                            <button onclick="copyResult('result-copy')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool 5: SEO Tips Generator -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-l-4 border-l-accent-500">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
+                <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center group-hover:bg-accent-200/80 transition-colors">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-display font-semibold text-lg text-gray-900">SEO Tips Generator</h2>
+                    <p class="text-sm text-gray-500">5 actionable SEO tips to rank higher in local search</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="callTool(event, '{% url "bcubed:api_seo" %}', 'result-seo')">
+                    {% csrf_token %}
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Category <span class="text-red-500">*</span></label>
+                            <input type="text" name="business_category" placeholder="e.g. plumber, electrician" required
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                            <input type="text" name="city" placeholder="e.g. Austin"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                            <input type="text" name="state" placeholder="e.g. Texas"
+                                class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-accent-500 to-purple-600 hover:from-accent-600 hover:to-purple-700 shadow-lg shadow-accent-500/25 hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Get SEO Tips
+                    </button>
+                </form>
+                <div id="result-seo" class="hidden mt-6 p-5 bg-gradient-to-br from-accent-50 to-accent-50/50 border border-accent-200/60 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-accent-600 uppercase tracking-wide flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Your SEO Action Plan
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportToDocx('result-seo', 'SEO Action Plan')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100" title="Export to Word">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export .docx
+                            </button>
+                            <button onclick="copyResult('result-seo')" class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-accent-600 transition-colors px-2 py-1 rounded-lg hover:bg-accent-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content prose prose-sm max-w-none text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+
+        {% include 'bcubed/_history.html' %}
+
+        <!-- Next stage CTA -->
+        <div class="pt-8">
+            <div class="rounded-2xl border border-gray-200 bg-gradient-to-r from-amber-50 via-white to-orange-50/50 p-8 text-center shadow-sm">
+                <p class="text-gray-600 font-medium mb-4">Ready to manage your money?</p>
+                <a href="{% url 'bcubed:bank' %}" class="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all duration-200">
+                    Continue to Bank
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const visited = JSON.parse(localStorage.getItem('bcubed_visited') || '[]');
+    if (!visited.includes('brand')) { visited.push('brand'); localStorage.setItem('bcubed_visited', JSON.stringify(visited)); }
+
+    async function callTool(e, endpoint, resultId) {
+        e.preventDefault();
+        const form = e.target;
+        const btn = form.querySelector('[type=submit]');
+        const resultBox = document.getElementById(resultId);
+        const origHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Generating...';
+        const data = Object.fromEntries(new FormData(form));
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            resultBox.classList.remove('hidden');
+            renderResult(resultBox.querySelector('.result-content'), json.result || json.error || 'Something went wrong.');
+        } catch (err) {
+            resultBox.classList.remove('hidden');
+            renderResult(resultBox.querySelector('.result-content'), 'Connection error. Please try again.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = origHTML;
+        }
+    }
+
+    function getCsrf() { return document.cookie.match(/csrftoken=([^;]+)/)?.[1] || ''; }
+
+    function copyHistoryResult(id) {
+        const text = document.getElementById(id).querySelector('.history-text').textContent;
+        navigator.clipboard.writeText(text);
+    }
+
+    async function deleteResult(pk) {
+        if (!confirm('Delete this saved result?')) return;
+        const res = await fetch(`/bcubed/api/result/${pk}/delete/`, {
+            method: 'POST', headers: { 'X-CSRFToken': getCsrf() }
+        });
+        if (res.ok) {
+            const el = document.getElementById(`history-${pk}`);
+            el.style.transition = 'opacity 0.3s';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 300);
+        }
+    }
+
+    function copyResult(id) {
+        const text = document.getElementById(id).querySelector('.result-content').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btns = document.querySelectorAll(`#${id} button`);
+            btns.forEach(b => { if (b.textContent.includes('Copy')) { b.textContent = 'Copied!'; setTimeout(() => b.innerHTML = '<svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>Copy', 2000); } });
+        });
+    }
+
+    async function exportToDocx(resultId, title) {
+        const box = document.getElementById(resultId);
+        if (!box) return;
+        const content = box.querySelector('.result-content').textContent.trim();
+        if (!content) { alert('Nothing to export.'); return; }
+        const url = '{% url "bcubed:export_docx" %}';
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+                body: JSON.stringify({ content: content, title: title })
+            });
+            if (!res.ok) { const j = await res.json().catch(() => ({})); alert(j.error || 'Export failed.'); return; }
+            const blob = await res.blob();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = (title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') || 'bcubed-export') + '.docx';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } catch (e) {
+            alert('Export failed. Please try again.');
+        }
+    }
+
+    function renderResult(el, content) {
+        const lines = String(content || '').replace(/\r\n/g, '\n').split('\n');
+        const out = [];
+        let inList = false;
+        let hasAnyHeading = false;
+        let sectionOpen = false;
+
+        const closeList = () => {
+            if (inList) { out.push('</ul>'); inList = false; }
+        };
+
+        const closeSection = () => {
+            if (sectionOpen) {
+                closeList();
+                out.push('</section>');
+                sectionOpen = false;
+            }
+        };
+
+        const openSection = (title, level) => {
+            hasAnyHeading = true;
+            closeSection();
+            const base = level === 2
+                ? 'mt-4 first:mt-0 rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm'
+                : 'mt-3 rounded-xl border border-gray-200 bg-white/50 p-3';
+            out.push(`<section class="${base}">`);
+            sectionOpen = true;
+            if (level === 2) {
+                out.push(`<h3 class="font-display text-base sm:text-lg font-bold text-gray-900 tracking-tight">${escapeHtml(title)}</h3>`);
+            } else {
+                out.push(`<h4 class="font-display text-sm sm:text-base font-semibold text-gray-900">${escapeHtml(title)}</h4>`);
+            }
+        };
+
+        out.push('<div class="space-y-3">');
+
+        for (const raw of lines) {
+            const t = raw.trim();
+            if (!t) { closeList(); continue; }
+
+            if (t.startsWith('## ')) { openSection(t.slice(3), 2); continue; }
+            if (t.startsWith('### ')) { openSection(t.slice(4), 3); continue; }
+
+            const bullet = t.match(/^(-|\*|\d+\.)\s+(.*)$/);
+            if (bullet) {
+                if (!inList) {
+                    out.push('<ul class="mt-2 list-disc pl-5 space-y-1 text-sm text-gray-800 leading-relaxed">');
+                    inList = true;
+                }
+                out.push(`<li>${escapeHtml(bullet[2])}</li>`);
+                continue;
+            }
+
+            closeList();
+            out.push(`<p class="text-sm text-gray-800 leading-relaxed">${escapeHtml(t)}</p>`);
+        }
+
+        closeList();
+        closeSection();
+        out.push('</div>');
+
+        const html = out.join('');
+        el.innerHTML = hasAnyHeading
+            ? html
+            : `<div class="rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm">${html}</div>`;
+    }
+
+    function escapeHtml(s) {
+        return String(s)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+</script>
+{% endblock %}

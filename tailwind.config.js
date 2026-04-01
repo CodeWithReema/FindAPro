@@ -74,6 +74,20 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'from-accent-500', 'to-purple-600', 'via-accent-500',
+    'bg-accent-50', 'bg-accent-100',
+    'text-accent-600', 'text-accent-700',
+    'border-accent-100', 'border-accent-200',
+    'shadow-accent-500/25', 'shadow-accent-500/30',
+    'hover:text-accent-600',
+    'from-amber-500', 'to-orange-500',
+    'bg-amber-50', 'bg-amber-100',
+    'text-amber-600', 'text-amber-700',
+    'border-amber-100', 'border-amber-200',
+    'shadow-amber-500/25', 'shadow-amber-500/30',
+    'hover:text-amber-600',
+  ],
   plugins: [],
 }
 
